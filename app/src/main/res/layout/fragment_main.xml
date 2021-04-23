@@ -14,8 +14,8 @@
             android:id="@+id/main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp">
+            android:paddingStart="@string/constraint_padding"
+            android:paddingEnd="@string/constraint_padding">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/input_layout"
@@ -43,7 +43,7 @@
          <TextView
              android:layout_marginTop="10dp"
              android:id="@+id/chips_text_view"
-             android:text="Load from day:"
+             android:text="@string/load_from_day_text_view"
              app:layout_constraintTop_toBottomOf="@+id/input_layout"
              app:layout_constraintStart_toStartOf="parent"
              android:layout_width="wrap_content"
@@ -70,21 +70,21 @@
                         style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="2 days ago" />
+                        android:text="@string/two_days_ago" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/yesterday_chip"
                         style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Yesterday" />
+                        android:text="@string/yesterday" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/today_chip"
                         style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Today" />
+                        android:text="@string/today" />
                 </com.google.android.material.chip.ChipGroup>
             </LinearLayout>
 
@@ -120,5 +120,6 @@
         android:backgroundTint="@color/colorAccent"
         app:layout_anchor="@id/bottom_app_bar"
         app:srcCompat="@drawable/ic_plus_fab"
-        app:tint="#FFFFFF" />
+        app:tint="#FFFFFF"
+        android:contentDescription="TODO" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
