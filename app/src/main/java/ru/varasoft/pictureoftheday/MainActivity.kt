@@ -2,6 +2,7 @@ package ru.varasoft.pictureoftheday
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import ru.varasoft.pictureoftheday.view.MainFragment
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

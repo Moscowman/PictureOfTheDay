@@ -1,4 +1,4 @@
-package ru.varasoft.pictureoftheday
+package ru.varasoft.pictureoftheday.view
 
 import android.content.Context
 import android.util.AttributeSet

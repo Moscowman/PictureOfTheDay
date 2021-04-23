@@ -1,4 +1,4 @@
-package ru.varasoft.pictureoftheday
+package ru.varasoft.pictureoftheday.view
 
 import android.content.Intent
 import android.net.Uri
@@ -15,6 +15,7 @@ import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_main.*
+import ru.varasoft.pictureoftheday.MainActivity
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

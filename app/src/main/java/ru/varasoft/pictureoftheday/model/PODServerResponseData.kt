@@ -1,4 +1,4 @@
-package ru.varasoft.pictureoftheday
+package ru.varasoft.pictureoftheday.model
 
 import com.google.gson.annotations.SerializedName
 

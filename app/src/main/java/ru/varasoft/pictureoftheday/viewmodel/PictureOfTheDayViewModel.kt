@@ -1,4 +1,4 @@
-package ru.varasoft.pictureoftheday
+package ru.varasoft.pictureoftheday.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -6,6 +6,10 @@ import androidx.lifecycle.ViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import ru.varasoft.pictureoftheday.BuildConfig
+import ru.varasoft.pictureoftheday.model.PODRetrofitImpl
+import ru.varasoft.pictureoftheday.model.PODServerResponseData
+import ru.varasoft.pictureoftheday.model.PictureOfTheDayData
 
 class PictureOfTheDayViewModel(
     private val liveDataForViewToObserve: MutableLiveData<PictureOfTheDayData> = MutableLiveData(),
