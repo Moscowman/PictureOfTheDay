@@ -102,7 +102,9 @@ class MainFragment : Fragment() {
         when (data) {
             is PictureOfTheDayData.Success -> {
                 val serverResponseData = data.serverResponseData
-                val url = serverResponseData.url
+                val url = if (serverResponseData.mediaType == "video")
+                    serverResponseData.thumbnailUrl
+                else serverResponseData.url
                 if (url.isNullOrEmpty()) {
                     //Отобразите ошибку
                     //showError("Сообщение, что ссылка пустая")
@@ -111,6 +113,8 @@ class MainFragment : Fragment() {
                     //showSuccess()
                     //Coil в работе: достаточно вызвать у нашего ImageView
                     //нужную extension-функцию и передать ссылку и заглушки для placeholder
+
+
                     image_view.load(url) {
                         lifecycle(this@MainFragment)
                         error(R.drawable.ic_load_error_vector)
