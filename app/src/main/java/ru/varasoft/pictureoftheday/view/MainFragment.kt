@@ -1,6 +1,5 @@
 package ru.varasoft.pictureoftheday.view
 
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -14,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import coil.api.load
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_main.*
 import ru.varasoft.pictureoftheday.MainActivity
@@ -21,6 +21,9 @@ import ru.varasoft.pictureoftheday.R
 import ru.varasoft.pictureoftheday.model.PODServerResponseData
 import ru.varasoft.pictureoftheday.model.PictureOfTheDayData
 import ru.varasoft.pictureoftheday.viewmodel.PictureOfTheDayViewModel
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.util.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -55,13 +58,43 @@ class MainFragment : Fragment() {
                 data = Uri.parse("https://en.wikipedia.org/wiki/${input_edit_text.text.toString()}")
             })
         }
+
+        chip_group.setOnCheckedChangeListener { chipGroup, position ->
+            chipGroup.findViewById<Chip>(position)?.let {
+                val sdf = SimpleDateFormat("yyyy-MM-dd")
+                val calendar = Calendar.getInstance()
+                when (it.id) {
+                    R.id.two_days_ago_chip -> {
+                        calendar.add(Calendar.DAY_OF_YEAR, -2);
+                        val date: String = sdf.format(calendar.getTime())
+                        viewModel.getData("2021-04-21").observe(
+                            viewLifecycleOwner,
+                            Observer<PictureOfTheDayData> { renderData(it) })
+                    }
+                    R.id.yesterday_chip -> {
+                        calendar.add(Calendar.DAY_OF_YEAR, -1);
+                        val date: String = sdf.format(calendar.getTime())
+                        viewModel.getData(date).observe(
+                            viewLifecycleOwner,
+                            Observer<PictureOfTheDayData> { renderData(it) })
+                    }
+                    R.id.today_chip -> {
+                        val date: String = sdf.format(calendar.getTime())
+                        viewModel.getData(date).observe(
+                            viewLifecycleOwner,
+                            Observer<PictureOfTheDayData> { renderData(it) })
+                    }
+                }
+            }
+        }
+
         setBottomSheetBehavior(view.findViewById(R.id.bottom_sheet_container))
         setBottomAppBar(view)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.getData()
+        viewModel.getData("2021-04-23")
             .observe(viewLifecycleOwner, Observer<PictureOfTheDayData> { renderData(it) })
     }
 
