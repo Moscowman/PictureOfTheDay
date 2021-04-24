@@ -67,7 +67,7 @@ class MainFragment : Fragment() {
                     R.id.two_days_ago_chip -> {
                         calendar.add(Calendar.DAY_OF_YEAR, -2);
                         val date: String = sdf.format(calendar.getTime())
-                        viewModel.getData("2021-04-21").observe(
+                        viewModel.getData(date).observe(
                             viewLifecycleOwner,
                             Observer<PictureOfTheDayData> { renderData(it) })
                     }

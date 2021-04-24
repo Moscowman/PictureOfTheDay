@@ -9,5 +9,5 @@
     <string name="load_from_day_text_view">Load from day:</string>
     <string name="yesterday">Yesterday</string>
     <string name="today">Today</string>
-    <string name="two_days_ago">Yesterday</string>
+    <string name="two_days_ago">2 days ago</string>
 </resources>

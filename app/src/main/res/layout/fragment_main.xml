@@ -14,8 +14,8 @@
             android:id="@+id/main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingStart="@string/constraint_padding"
-            android:paddingEnd="@string/constraint_padding">
+            android:paddingStart="@dimen/constraint_padding"
+            android:paddingEnd="@dimen/constraint_padding">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/input_layout"
