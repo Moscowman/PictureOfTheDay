@@ -9,7 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/main"
             android:layout_width="match_parent"
@@ -31,7 +30,8 @@
                 app:helperText="@string/wiki_helper_text"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearance="@style/AppShapeAppearance">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/input_edit_text"
@@ -40,16 +40,16 @@
                     android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
 
-         <TextView
-             android:layout_marginTop="10dp"
-             android:id="@+id/chips_text_view"
-             android:text="@string/load_from_day_text_view"
-             app:layout_constraintTop_toBottomOf="@+id/input_layout"
-             app:layout_constraintStart_toStartOf="parent"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/chips_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/load_from_day_text_view"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/input_layout" />
 
-         <LinearLayout
+            <LinearLayout
                 android:id="@+id/chips"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -61,30 +61,33 @@
                     android:id="@+id/chip_group"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    app:checkedChip="@id/today_chip"
                     app:selectionRequired="true"
-                    app:singleSelection="true"
-                    app:checkedChip="@id/today_chip">
+                    app:singleSelection="true">
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/two_days_ago_chip"
                         style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/two_days_ago" />
+                        android:text="@string/two_days_ago"
+                        app:shapeAppearance="@style/ChipsShapeAppearance" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/yesterday_chip"
                         style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/yesterday" />
+                        android:text="@string/yesterday"
+                        app:shapeAppearance="@style/ChipsShapeAppearance" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/today_chip"
                         style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/today" />
+                        android:text="@string/today"
+                        app:shapeAppearance="@style/ChipsShapeAppearance" />
                 </com.google.android.material.chip.ChipGroup>
             </LinearLayout>
 
@@ -104,22 +107,5 @@
 
     <include layout="@layout/bottom_sheet_layout" />
 
-    <com.google.android.material.bottomappbar.BottomAppBar
-        android:id="@+id/bottom_app_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        app:backgroundTint="@color/colorPrimary"
-        app:fabAlignmentMode="center"
-        app:navigationIcon="@drawable/ic_hamburger_menu_bottom_bar" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/colorAccent"
-        app:layout_anchor="@id/bottom_app_bar"
-        app:srcCompat="@drawable/ic_plus_fab"
-        app:tint="#FFFFFF"
-        android:contentDescription="TODO" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

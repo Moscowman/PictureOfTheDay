@@ -11,4 +11,22 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+    <color name="marsPrimaryColor">#d84315</color>
+    <color name="marsPrimaryLightColor">#ff7543</color>
+    <color name="marsPrimaryDarkColor">#9f0000</color>
+    <color name="marsSecondaryColor">#008c67</color>
+    <color name="marsSecondaryLightColor">#4dbd95</color>
+    <color name="marsSecondaryDarkColor">#005e3c</color>
+    <color name="marsPrimaryTextColor">#000000</color>
+    <color name="marsSecondaryTextColor">#000000</color>
+
+    <color name="moonPrimaryColor">#bdd0e4</color>
+    <color name="moonPrimaryLightColor">#f0ffff</color>
+    <color name="moonPrimaryDarkColor">#8d9fb2</color>
+    <color name="moonSecondaryColor">#96825f</color>
+    <color name="moonSecondaryLightColor">#c7b18d</color>
+    <color name="moonSecondaryDarkColor">#675635</color>
+    <color name="moonPrimaryTextColor">#000000</color>
+    <color name="moonSecondaryTextColor">#000000</color>
 </resources>
