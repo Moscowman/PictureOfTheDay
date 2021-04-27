@@ -13,4 +13,35 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="MarsianTheme" parent="Theme.PictureOfTheDay">
+        <item name="colorPrimary">@color/marsPrimaryColor</item>
+        <item name="colorPrimaryVariant">@color/marsPrimaryDarkColor</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/marsSecondaryColor</item>
+        <item name="colorSecondaryVariant">@color/marsSecondaryDarkColor</item>
+        <item name="colorOnSecondary">@color/black</item>
+    </style>
+
+    <style name="MoonTheme" parent="Theme.PictureOfTheDay">
+        <item name="colorPrimary">@color/moonPrimaryColor</item>
+        <item name="colorPrimaryVariant">@color/moonPrimaryDarkColor</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/moonSecondaryColor</item>
+        <item name="colorSecondaryVariant">@color/moonSecondaryDarkColor</item>
+        <item name="colorOnSecondary">@color/black</item>
+    </style>
+
+    <style name="AppShapeAppearance" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">cut</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+
+    <style name="ChipsShapeAppearance" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">cut</item>
+        <item name="cornerSize">1dp</item>
+    </style>
+
 </resources>
