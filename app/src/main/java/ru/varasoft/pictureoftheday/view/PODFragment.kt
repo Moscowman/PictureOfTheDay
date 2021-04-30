@@ -5,25 +5,19 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import coil.api.load
-import com.google.android.material.bottomappbar.BottomAppBar
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_main.*
-import ru.varasoft.pictureoftheday.MainActivity
 import ru.varasoft.pictureoftheday.R
 import ru.varasoft.pictureoftheday.model.PODServerResponseData
 import ru.varasoft.pictureoftheday.model.PictureOfTheDayData
 import ru.varasoft.pictureoftheday.viewmodel.PictureOfTheDayViewModel
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.util.*
 
 
@@ -34,10 +28,10 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [MainFragment.newInstance] factory method to
+ * Use the [PODFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class MainFragment : Fragment() {
+class PODFragment : Fragment() {
 
     private val viewModel: PictureOfTheDayViewModel by lazy {
         ViewModelProviders.of(this).get(PictureOfTheDayViewModel::class.java)
@@ -155,7 +149,7 @@ class MainFragment : Fragment() {
         serverResponseData: PODServerResponseData
     ) {
         image_view.load(url) {
-            lifecycle(this@MainFragment)
+            lifecycle(this@PODFragment)
             error(R.drawable.ic_load_error_vector)
             placeholder(R.drawable.ic_no_photo_vector)
         }
@@ -182,7 +176,7 @@ class MainFragment : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance() =
-            MainFragment().apply {
+            PODFragment().apply {
             }
     }
 }
