@@ -7,11 +7,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import ru.varasoft.pictureoftheday.BuildConfig
-import ru.varasoft.pictureoftheday.model.RetrofitImpl
-import ru.varasoft.pictureoftheday.model.PODServerResponseData
-import ru.varasoft.pictureoftheday.model.PictureOfTheDayData
+import ru.varasoft.pictureoftheday.model.*
 
-class EarthPhotoViewModel(
+class MarsPhotoViewModel(
     private val liveDataForViewToObserve: MutableLiveData<PictureOfTheDayData> = MutableLiveData(),
     private val retrofitImpl: RetrofitImpl = RetrofitImpl()
 ) :
@@ -28,6 +26,24 @@ class EarthPhotoViewModel(
         if (apiKey.isBlank()) {
             PictureOfTheDayData.Error(Throwable("You need API key"))
         } else {
+            retrofitImpl.getMarsManifestRetrofitImpl().getMarsManifest("perseverance").enqueue(object: Callback<MarsManifestServerResponseData> {
+                override fun onResponse(
+                    call: Call<MarsManifestServerResponseData>,
+                    response: Response<MarsManifestServerResponseData>
+                ) {
+                    if (response.isSuccessful && response.body() != null) {
+                    } else {
+                        val message = response.message()
+                        if (message.isNullOrEmpty()) {
+                        } else {
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<MarsManifestServerResponseData>, t: Throwable) {
+                }
+
+            })
             retrofitImpl.getPODRetrofitImpl().getPictureOfTheDay(apiKey, "true", date).enqueue(object :
                 Callback<PODServerResponseData> {
                 override fun onResponse(

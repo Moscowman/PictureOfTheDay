@@ -7,13 +7,13 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import ru.varasoft.pictureoftheday.BuildConfig
-import ru.varasoft.pictureoftheday.model.PODRetrofitImpl
+import ru.varasoft.pictureoftheday.model.RetrofitImpl
 import ru.varasoft.pictureoftheday.model.PODServerResponseData
 import ru.varasoft.pictureoftheday.model.PictureOfTheDayData
 
 class PictureOfTheDayViewModel(
     private val liveDataForViewToObserve: MutableLiveData<PictureOfTheDayData> = MutableLiveData(),
-    private val retrofitImpl: PODRetrofitImpl = PODRetrofitImpl()
+    private val retrofitImpl: RetrofitImpl = RetrofitImpl()
 ) :
     ViewModel() {
 
@@ -28,7 +28,7 @@ class PictureOfTheDayViewModel(
         if (apiKey.isBlank()) {
             PictureOfTheDayData.Error(Throwable("You need API key"))
         } else {
-            retrofitImpl.getRetrofitImpl().getPictureOfTheDay(apiKey, "true", date).enqueue(object :
+            retrofitImpl.getPODRetrofitImpl().getPictureOfTheDay(apiKey, "true", date).enqueue(object :
                 Callback<PODServerResponseData> {
                 override fun onResponse(
                     call: Call<PODServerResponseData>,

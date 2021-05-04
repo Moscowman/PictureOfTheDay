@@ -8,16 +8,25 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 
-class EarthPhotoRetrofitImpl {
+class RetrofitImpl {
     private val baseUrl = "https://api.nasa.gov/"
 
-    fun getRetrofitImpl(): PictureOfTheDayAPI {
+    fun getPODRetrofitImpl(): PictureOfTheDayAPI {
         val podRetrofit = Retrofit.Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
             .client(createOkHttpClient(PODInterceptor()))
             .build()
         return podRetrofit.create(PictureOfTheDayAPI::class.java)
+    }
+
+    fun getMarsManifestRetrofitImpl(): MarsManifestAPI {
+        val marsManifestRetrofit = Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
+            .client(createOkHttpClient(PODInterceptor()))
+            .build()
+        return marsManifestRetrofit.create(MarsManifestAPI::class.java)
     }
 
     private fun createOkHttpClient(interceptor: Interceptor): OkHttpClient {
@@ -34,5 +43,4 @@ class EarthPhotoRetrofitImpl {
             return chain.proceed(chain.request())
         }
     }
-
 }

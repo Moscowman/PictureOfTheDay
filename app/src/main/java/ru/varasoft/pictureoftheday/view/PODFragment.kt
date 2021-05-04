@@ -20,17 +20,6 @@ import ru.varasoft.pictureoftheday.viewmodel.PictureOfTheDayViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [PODFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class PODFragment : Fragment() {
 
     private val viewModel: PictureOfTheDayViewModel by lazy {
@@ -44,6 +33,13 @@ class PODFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
+    private fun getDateRelativeToToday(offset: Int): String {
+        val sdf = SimpleDateFormat("yyyy-MM-dd")
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DAY_OF_YEAR, offset);
+        return sdf.format(calendar.getTime())
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         input_layout.setEndIconOnClickListener {
@@ -54,25 +50,21 @@ class PODFragment : Fragment() {
 
         chip_group.setOnCheckedChangeListener { chipGroup, position ->
             chipGroup.findViewById<Chip>(position)?.let {
-                val sdf = SimpleDateFormat("yyyy-MM-dd")
-                val calendar = Calendar.getInstance()
                 when (it.id) {
                     R.id.two_days_ago_chip -> {
-                        calendar.add(Calendar.DAY_OF_YEAR, -2);
-                        val date: String = sdf.format(calendar.getTime())
+                        val date: String = getDateRelativeToToday(-2)
                         viewModel.getData(date).observe(
                             viewLifecycleOwner,
                             Observer<PictureOfTheDayData> { renderData(it) })
                     }
                     R.id.yesterday_chip -> {
-                        calendar.add(Calendar.DAY_OF_YEAR, -1);
-                        val date: String = sdf.format(calendar.getTime())
+                        val date: String = getDateRelativeToToday(-1)
                         viewModel.getData(date).observe(
                             viewLifecycleOwner,
                             Observer<PictureOfTheDayData> { renderData(it) })
                     }
                     R.id.today_chip -> {
-                        val date: String = sdf.format(calendar.getTime())
+                        val date: String = getDateRelativeToToday(0)
                         viewModel.getData(date).observe(
                             viewLifecycleOwner,
                             Observer<PictureOfTheDayData> { renderData(it) })
@@ -85,7 +77,7 @@ class PODFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.getData("2021-04-23")
+        viewModel.getData(getDateRelativeToToday(0))
             .observe(viewLifecycleOwner, Observer<PictureOfTheDayData> { renderData(it) })
     }
 
