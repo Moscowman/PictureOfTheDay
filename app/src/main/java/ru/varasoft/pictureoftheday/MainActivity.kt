@@ -1,11 +1,15 @@
 package ru.varasoft.pictureoftheday
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import geekbarains.material.ui.api.EarthFragment
 import geekbarains.material.ui.api.MarsFragment
 import geekbarains.material.ui.api.WeatherFragment
+import kotlinx.android.synthetic.main.fragment_pod.*
 import ru.varasoft.pictureoftheday.databinding.ActivityMainBinding
 import ru.varasoft.pictureoftheday.view.PODFragment
 import ru.varasoft.pictureoftheday.view.SETTINGS_SHARED_PREFERENCE
@@ -25,44 +29,49 @@ class MainActivity : AppCompatActivity() {
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.container, PODFragment.newInstance())
-                .commitNow()
+            replaceFragment(PODFragment.newInstance())
         }
+
+        binding.inputLayout.setEndIconOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW).apply {
+                data = Uri.parse("https://en.wikipedia.org/wiki/${binding.inputEditText.text.toString()}")
+            })
+        }
+
+        setBottomNavigationView()
+    }
+
+    private fun setBottomNavigationView() {
         binding.bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.bottom_view_telescope -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.container, PODFragment())
-                        .commitAllowingStateLoss()
+                    replaceFragment(PODFragment())
                     true
                 }
                 R.id.bottom_view_earth -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.container, EarthFragment())
-                        .commitAllowingStateLoss()
+                    replaceFragment(EarthFragment())
                     true
                 }
                 R.id.bottom_view_mars -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.container, MarsFragment())
-                        .commitAllowingStateLoss()
+                    replaceFragment(MarsFragment())
                     true
                 }
                 R.id.bottom_view_weather -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.container, WeatherFragment())
-                        .commitAllowingStateLoss()
+                    replaceFragment(WeatherFragment())
                     true
                 }
                 R.id.bottom_view_settings -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.container, SettingsFragment())
-                        .commitAllowingStateLoss()
+                    replaceFragment(SettingsFragment())
                     true
                 }
                 else -> false
             }
         }
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.container, fragment)
+            .commitNowAllowingStateLoss()
     }
 }
