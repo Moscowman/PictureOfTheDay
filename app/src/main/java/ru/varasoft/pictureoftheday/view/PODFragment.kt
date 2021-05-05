@@ -12,7 +12,7 @@ import coil.load
 import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
-import kotlinx.android.synthetic.main.fragment_main.*
+import kotlinx.android.synthetic.main.fragment_pod.*
 import ru.varasoft.pictureoftheday.R
 import ru.varasoft.pictureoftheday.model.PODServerResponseData
 import ru.varasoft.pictureoftheday.model.PictureOfTheDayData
@@ -22,6 +22,8 @@ import java.util.*
 
 class PODFragment : Fragment() {
 
+    private var offset: Int = 0
+
     private val viewModel: PictureOfTheDayViewModel by lazy {
         ViewModelProviders.of(this).get(PictureOfTheDayViewModel::class.java)
     }
@@ -30,7 +32,7 @@ class PODFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_main, container, false)
+        return inflater.inflate(R.layout.fragment_pod, container, false)
     }
 
     private fun getDateRelativeToToday(offset: Int): String {
@@ -42,32 +44,18 @@ class PODFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        input_layout.setEndIconOnClickListener {
-            startActivity(Intent(Intent.ACTION_VIEW).apply {
-                data = Uri.parse("https://en.wikipedia.org/wiki/${input_edit_text.text.toString()}")
-            })
-        }
 
         chip_group.setOnCheckedChangeListener { chipGroup, position ->
             chipGroup.findViewById<Chip>(position)?.let {
                 when (it.id) {
                     R.id.two_days_ago_chip -> {
-                        val date: String = getDateRelativeToToday(-2)
-                        viewModel.getData(date).observe(
-                            viewLifecycleOwner,
-                            Observer<PictureOfTheDayData> { renderData(it) })
+                        renderPuctureRelativeToToday(-2)
                     }
                     R.id.yesterday_chip -> {
-                        val date: String = getDateRelativeToToday(-1)
-                        viewModel.getData(date).observe(
-                            viewLifecycleOwner,
-                            Observer<PictureOfTheDayData> { renderData(it) })
+                        renderPuctureRelativeToToday(-1)
                     }
                     R.id.today_chip -> {
-                        val date: String = getDateRelativeToToday(0)
-                        viewModel.getData(date).observe(
-                            viewLifecycleOwner,
-                            Observer<PictureOfTheDayData> { renderData(it) })
+                        renderPuctureRelativeToToday(0)
                     }
                 }
             }
@@ -75,9 +63,17 @@ class PODFragment : Fragment() {
         setHasOptionsMenu(true)
     }
 
+    private fun renderPuctureRelativeToToday(_offset: Int) {
+        offset = _offset
+        val date: String = getDateRelativeToToday(offset)
+        viewModel.getData(date).observe(
+            viewLifecycleOwner,
+            Observer<PictureOfTheDayData> { renderData(it) })
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.getData(getDateRelativeToToday(0))
+        viewModel.getData(getDateRelativeToToday(offset))
             .observe(viewLifecycleOwner, Observer<PictureOfTheDayData> { renderData(it) })
     }
 
