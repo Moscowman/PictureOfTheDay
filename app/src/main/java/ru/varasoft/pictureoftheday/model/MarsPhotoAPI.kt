@@ -6,5 +6,5 @@ import retrofit2.http.Query
 
 interface MarsPhotoAPI {
     @GET("planetary/apod")
-    fun getMarsPhoto(@Query("api_key") apiKey: String, @Query("thumbs") thumbs: String, @Query("date") date: String): Call<MarsPhotoServerResponseData>
+    fun getMarsPhoto(@Query("api_key") apiKey: String, @Query("thumbs") thumbs: String, @Query("date") date: String): Call<MarsPhotoArrayServerResponseData>
 }

@@ -29,6 +29,15 @@ class RetrofitImpl {
         return marsManifestRetrofit.create(MarsManifestAPI::class.java)
     }
 
+    fun getMarsPhotoRetrofitImpl(): MarsPhotoAPI {
+        val marsPhotoRetrofit = Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
+            .client(createOkHttpClient(PODInterceptor()))
+            .build()
+        return marsPhotoRetrofit.create(MarsPhotoAPI::class.java)
+    }
+
     private fun createOkHttpClient(interceptor: Interceptor): OkHttpClient {
         val httpClient = OkHttpClient.Builder()
         httpClient.addInterceptor(interceptor)
