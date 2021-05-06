@@ -10,7 +10,7 @@ data class MarsPhotoServerResponseData(
     @field:SerializedName("id") val id: Int,
     @field:SerializedName("sol") val sol: Int,
     @field:SerializedName("camera") val camera: MarsCameraServerResponseData,
-    @field:SerializedName("img_src") val imgSrc: Int,
+    @field:SerializedName("img_src") val imgSrc: String,
     @field:SerializedName("earth_date") val earthDate: String,
     @field:SerializedName("rover") val rover: MarsRoverServerResponseData
 )

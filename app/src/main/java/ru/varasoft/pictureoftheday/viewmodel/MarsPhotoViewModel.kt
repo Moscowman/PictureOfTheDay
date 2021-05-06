@@ -1,5 +1,6 @@
 package ru.varasoft.pictureoftheday.viewmodel
 
+import android.icu.text.SimpleDateFormat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -23,7 +24,7 @@ class MarsPhotoViewModel(
 
     private fun getMarsManifest(roverName: String, date: String) {
         if (roversManifest != null) {
-            sendServerRequest(date)
+            sendServerRequest(roverName, date)
         }
         val apiKey: String = BuildConfig.NASA_API_KEY
         if (apiKey.isBlank()) {
@@ -37,7 +38,10 @@ class MarsPhotoViewModel(
                         response: Response<MarsManifestServerResponseData>
                     ) {
                         if (response.isSuccessful && response.body() != null) {
-                            sendServerRequest(date)
+                            val maxDate = response.body()!!.photoManifest?.maxDate
+                            if (maxDate != null) {
+                                sendServerRequest(roverName, maxDate)
+                            }
                         } else {
                             val message = response.message()
                             if (message.isNullOrEmpty()) {
@@ -60,14 +64,14 @@ class MarsPhotoViewModel(
         }
     }
 
-    private fun sendServerRequest(date: String) {
+    private fun sendServerRequest(roverName: String, date: String) {
         liveDataForViewToObserve.value = MarsPhotoData.Loading(null)
         val apiKey: String = BuildConfig.NASA_API_KEY
         if (apiKey.isBlank()) {
             MarsPhotoData.Error(Throwable("You need API key"))
         } else {
             retrofitImpl.getMarsPhotoRetrofitImpl()
-                .getMarsPhoto(apiKey, "true", date).enqueue(object :
+                .getMarsPhoto(roverName, apiKey, date).enqueue(object :
                     Callback<MarsPhotoArrayServerResponseData> {
                     override fun onResponse(
                         call: Call<MarsPhotoArrayServerResponseData>,
