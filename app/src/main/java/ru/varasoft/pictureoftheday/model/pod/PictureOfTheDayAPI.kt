@@ -1,4 +1,4 @@
-package ru.varasoft.pictureoftheday.model
+package ru.varasoft.pictureoftheday.model.pod
 
 import retrofit2.Call
 import retrofit2.http.GET

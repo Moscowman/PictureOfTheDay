@@ -6,6 +6,9 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import ru.varasoft.pictureoftheday.model.mars.MarsManifestAPI
+import ru.varasoft.pictureoftheday.model.mars.MarsPhotoAPI
+import ru.varasoft.pictureoftheday.model.pod.PictureOfTheDayAPI
 import java.io.IOException
 
 class RetrofitImpl {

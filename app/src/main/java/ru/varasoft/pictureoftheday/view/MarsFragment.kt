@@ -1,7 +1,5 @@
 package geekbarains.material.ui.api
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -16,10 +14,8 @@ import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_mars.*
 import kotlinx.android.synthetic.main.fragment_pod.*
 import ru.varasoft.pictureoftheday.R
-import ru.varasoft.pictureoftheday.model.MarsPhotoArrayServerResponseData
-import ru.varasoft.pictureoftheday.model.MarsPhotoData
-import ru.varasoft.pictureoftheday.model.PODServerResponseData
-import ru.varasoft.pictureoftheday.model.PictureOfTheDayData
+import ru.varasoft.pictureoftheday.model.mars.MarsPhotoArrayServerResponseData
+import ru.varasoft.pictureoftheday.model.mars.MarsPhotoData
 import ru.varasoft.pictureoftheday.viewmodel.MarsPhotoViewModel
 import java.text.SimpleDateFormat
 import java.util.*

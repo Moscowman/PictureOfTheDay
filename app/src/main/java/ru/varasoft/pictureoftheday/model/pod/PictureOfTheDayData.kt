@@ -1,4 +1,4 @@
-package ru.varasoft.pictureoftheday.model
+package ru.varasoft.pictureoftheday.model.pod
 
 sealed class PictureOfTheDayData {
     data class Success(val serverResponseData: PODServerResponseData) : PictureOfTheDayData()

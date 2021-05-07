@@ -1,6 +1,5 @@
 package ru.varasoft.pictureoftheday.viewmodel
 
-import android.icu.text.SimpleDateFormat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,6 +8,9 @@ import retrofit2.Callback
 import retrofit2.Response
 import ru.varasoft.pictureoftheday.BuildConfig
 import ru.varasoft.pictureoftheday.model.*
+import ru.varasoft.pictureoftheday.model.mars.MarsManifestServerResponseData
+import ru.varasoft.pictureoftheday.model.mars.MarsPhotoArrayServerResponseData
+import ru.varasoft.pictureoftheday.model.mars.MarsPhotoData
 
 class MarsPhotoViewModel(
     private val liveDataForViewToObserve: MutableLiveData<MarsPhotoData> = MutableLiveData(),

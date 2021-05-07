@@ -1,4 +1,4 @@
-package ru.varasoft.pictureoftheday.model
+package ru.varasoft.pictureoftheday.model.mars
 
 sealed class MarsPhotoData {
     data class Success(val serverResponseData: MarsPhotoArrayServerResponseData) : MarsPhotoData()
