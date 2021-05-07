@@ -5,6 +5,6 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface EarthPhotoAPI {
-    @GET("planetary/apod")
-    fun getEarthPhoto(@Query("api_key") apiKey: String, @Query("thumbs") thumbs: String, @Query("date") date: String): Call<EarthPhotoServerResponseData>
+    @GET("planetary/earth/imagery")
+    fun getEarthPhoto(@Query("api_key") apiKey: String, @Query("lon") longitude: String, @Query("lat") latitude: String, @Query("date") date: String): Call<EarthPhotoServerResponseData>
 }
