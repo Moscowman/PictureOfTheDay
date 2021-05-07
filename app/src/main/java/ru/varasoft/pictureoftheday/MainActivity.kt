@@ -6,11 +6,11 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import geekbarains.material.ui.api.EarthFragment
 import geekbarains.material.ui.api.MarsFragment
 import geekbarains.material.ui.api.WeatherFragment
 import kotlinx.android.synthetic.main.fragment_pod.*
 import ru.varasoft.pictureoftheday.databinding.ActivityMainBinding
+import ru.varasoft.pictureoftheday.model.earth.EarthFragment
 import ru.varasoft.pictureoftheday.view.PODFragment
 import ru.varasoft.pictureoftheday.view.SETTINGS_SHARED_PREFERENCE
 import ru.varasoft.pictureoftheday.view.SettingsFragment
