@@ -6,18 +6,39 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import ru.varasoft.pictureoftheday.model.mars.MarsManifestAPI
+import ru.varasoft.pictureoftheday.model.mars.MarsPhotoAPI
+import ru.varasoft.pictureoftheday.model.pod.PictureOfTheDayAPI
 import java.io.IOException
 
-class PODRetrofitImpl {
+class RetrofitImpl {
     private val baseUrl = "https://api.nasa.gov/"
 
-    fun getRetrofitImpl(): PictureOfTheDayAPI {
+    fun getPODRetrofitImpl(): PictureOfTheDayAPI {
         val podRetrofit = Retrofit.Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
             .client(createOkHttpClient(PODInterceptor()))
             .build()
         return podRetrofit.create(PictureOfTheDayAPI::class.java)
+    }
+
+    fun getMarsManifestRetrofitImpl(): MarsManifestAPI {
+        val marsManifestRetrofit = Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
+            .client(createOkHttpClient(PODInterceptor()))
+            .build()
+        return marsManifestRetrofit.create(MarsManifestAPI::class.java)
+    }
+
+    fun getMarsPhotoRetrofitImpl(): MarsPhotoAPI {
+        val marsPhotoRetrofit = Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
+            .client(createOkHttpClient(PODInterceptor()))
+            .build()
+        return marsPhotoRetrofit.create(MarsPhotoAPI::class.java)
     }
 
     private fun createOkHttpClient(interceptor: Interceptor): OkHttpClient {
@@ -34,5 +55,4 @@ class PODRetrofitImpl {
             return chain.proceed(chain.request())
         }
     }
-
 }

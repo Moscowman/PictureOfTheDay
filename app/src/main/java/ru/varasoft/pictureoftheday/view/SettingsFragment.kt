@@ -2,14 +2,10 @@ package ru.varasoft.pictureoftheday.view
 
 import android.content.Context
 import android.os.Bundle
-import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.google.android.material.chip.Chip
-import kotlinx.android.synthetic.main.fragment_settings.*
-import ru.varasoft.pictureoftheday.MainActivity
 import ru.varasoft.pictureoftheday.R
 import ru.varasoft.pictureoftheday.databinding.FragmentSettingsBinding
 
@@ -72,7 +68,7 @@ class SettingsFragment : Fragment() {
     }
 
     private fun loadSharedPreferenceSettings() {
-        requireActivity()?.let {
+        requireActivity().let {
             savedThemeName =
                 it.getSharedPreferences(SETTINGS_SHARED_PREFERENCE, Context.MODE_PRIVATE)
                     .getString(THEME_NAME_SHARED_PREFERENCE, EARTH).toString()

@@ -5,39 +5,24 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import coil.api.load
-import com.google.android.material.bottomappbar.BottomAppBar
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
-import kotlinx.android.synthetic.main.fragment_main.*
-import ru.varasoft.pictureoftheday.MainActivity
+import kotlinx.android.synthetic.main.fragment_pod.*
 import ru.varasoft.pictureoftheday.R
-import ru.varasoft.pictureoftheday.model.PODServerResponseData
-import ru.varasoft.pictureoftheday.model.PictureOfTheDayData
+import ru.varasoft.pictureoftheday.model.pod.PODServerResponseData
+import ru.varasoft.pictureoftheday.model.pod.PictureOfTheDayData
 import ru.varasoft.pictureoftheday.viewmodel.PictureOfTheDayViewModel
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.util.*
 
+class PODFragment : Fragment() {
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [MainFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class MainFragment : Fragment() {
+    private var offset: Int = 0
 
     private val viewModel: PictureOfTheDayViewModel by lazy {
         ViewModelProviders.of(this).get(PictureOfTheDayViewModel::class.java)
@@ -47,41 +32,30 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_main, container, false)
+        return inflater.inflate(R.layout.fragment_pod, container, false)
+    }
+
+    private fun getDateRelativeToToday(offset: Int): String {
+        val sdf = SimpleDateFormat("yyyy-MM-dd")
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DAY_OF_YEAR, offset);
+        return sdf.format(calendar.getTime())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        input_layout.setEndIconOnClickListener {
-            startActivity(Intent(Intent.ACTION_VIEW).apply {
-                data = Uri.parse("https://en.wikipedia.org/wiki/${input_edit_text.text.toString()}")
-            })
-        }
 
         chip_group.setOnCheckedChangeListener { chipGroup, position ->
             chipGroup.findViewById<Chip>(position)?.let {
-                val sdf = SimpleDateFormat("yyyy-MM-dd")
-                val calendar = Calendar.getInstance()
                 when (it.id) {
                     R.id.two_days_ago_chip -> {
-                        calendar.add(Calendar.DAY_OF_YEAR, -2);
-                        val date: String = sdf.format(calendar.getTime())
-                        viewModel.getData(date).observe(
-                            viewLifecycleOwner,
-                            Observer<PictureOfTheDayData> { renderData(it) })
+                        renderPuctureRelativeToToday(-2)
                     }
                     R.id.yesterday_chip -> {
-                        calendar.add(Calendar.DAY_OF_YEAR, -1);
-                        val date: String = sdf.format(calendar.getTime())
-                        viewModel.getData(date).observe(
-                            viewLifecycleOwner,
-                            Observer<PictureOfTheDayData> { renderData(it) })
+                        renderPuctureRelativeToToday(-1)
                     }
                     R.id.today_chip -> {
-                        val date: String = sdf.format(calendar.getTime())
-                        viewModel.getData(date).observe(
-                            viewLifecycleOwner,
-                            Observer<PictureOfTheDayData> { renderData(it) })
+                        renderPuctureRelativeToToday(0)
                     }
                 }
             }
@@ -89,9 +63,17 @@ class MainFragment : Fragment() {
         setHasOptionsMenu(true)
     }
 
+    private fun renderPuctureRelativeToToday(_offset: Int) {
+        offset = _offset
+        val date: String = getDateRelativeToToday(offset)
+        viewModel.getData(date).observe(
+            viewLifecycleOwner,
+            Observer<PictureOfTheDayData> { renderData(it) })
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.getData("2021-04-23")
+        viewModel.getData(getDateRelativeToToday(offset))
             .observe(viewLifecycleOwner, Observer<PictureOfTheDayData> { renderData(it) })
     }
 
@@ -155,7 +137,7 @@ class MainFragment : Fragment() {
         serverResponseData: PODServerResponseData
     ) {
         image_view.load(url) {
-            lifecycle(this@MainFragment)
+            lifecycle(this@PODFragment)
             error(R.drawable.ic_load_error_vector)
             placeholder(R.drawable.ic_no_photo_vector)
         }
@@ -182,7 +164,7 @@ class MainFragment : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance() =
-            MainFragment().apply {
+            PODFragment().apply {
             }
     }
 }

@@ -11,7 +11,7 @@ import ru.varasoft.pictureoftheday.model.RetrofitImpl
 import ru.varasoft.pictureoftheday.model.pod.PODServerResponseData
 import ru.varasoft.pictureoftheday.model.pod.PictureOfTheDayData
 
-class PictureOfTheDayViewModel(
+class EarthPhotoViewModel(
     private val liveDataForViewToObserve: MutableLiveData<PictureOfTheDayData> = MutableLiveData(),
     private val retrofitImpl: RetrofitImpl = RetrofitImpl()
 ) :
