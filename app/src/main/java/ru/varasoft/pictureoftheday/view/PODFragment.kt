@@ -14,8 +14,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_pod.*
 import ru.varasoft.pictureoftheday.R
-import ru.varasoft.pictureoftheday.model.PODServerResponseData
-import ru.varasoft.pictureoftheday.model.PictureOfTheDayData
+import ru.varasoft.pictureoftheday.model.pod.PODServerResponseData
+import ru.varasoft.pictureoftheday.model.pod.PictureOfTheDayData
 import ru.varasoft.pictureoftheday.viewmodel.PictureOfTheDayViewModel
 import java.text.SimpleDateFormat
 import java.util.*

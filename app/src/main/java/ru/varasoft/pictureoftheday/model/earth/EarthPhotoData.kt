@@ -1,4 +1,4 @@
-package ru.varasoft.pictureoftheday.model
+package ru.varasoft.pictureoftheday.model.earth
 
 sealed class EarthPhotoData {
     data class Success(val serverResponseData: EarthPhotoServerResponseData) : EarthPhotoData()

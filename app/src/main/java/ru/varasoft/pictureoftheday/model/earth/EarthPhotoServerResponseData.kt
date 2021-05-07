@@ -1,8 +1,8 @@
-package ru.varasoft.pictureoftheday.model
+package ru.varasoft.pictureoftheday.model.earth
 
 import com.google.gson.annotations.SerializedName
 
-data class MarsPhotoServerResponseData(
+data class EarthPhotoServerResponseData(
     @field:SerializedName("copyright") val copyright: String?,
     @field:SerializedName("date") val date: String?,
     @field:SerializedName("explanation") val explanation: String?,

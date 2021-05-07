@@ -8,8 +8,8 @@ import retrofit2.Callback
 import retrofit2.Response
 import ru.varasoft.pictureoftheday.BuildConfig
 import ru.varasoft.pictureoftheday.model.RetrofitImpl
-import ru.varasoft.pictureoftheday.model.PODServerResponseData
-import ru.varasoft.pictureoftheday.model.PictureOfTheDayData
+import ru.varasoft.pictureoftheday.model.pod.PODServerResponseData
+import ru.varasoft.pictureoftheday.model.pod.PictureOfTheDayData
 
 class PictureOfTheDayViewModel(
     private val liveDataForViewToObserve: MutableLiveData<PictureOfTheDayData> = MutableLiveData(),
