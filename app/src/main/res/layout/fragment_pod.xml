@@ -19,53 +19,50 @@
             <TextView
                 android:id="@+id/chips_text_view"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginTop="10dp"
                 android:text="@string/load_from_day_text_view"
+                app:layout_constraintHeight_percent="0.07"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <LinearLayout
-                android:id="@+id/chips"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@+id/chips_text_view"
-                tools:layout_editor_absoluteX="10dp">
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chip_group"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                app:checkedChip="@id/today_chip"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_percent="0.15"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/chips_text_view"
+                app:selectionRequired="true"
+                app:singleSelection="true">
 
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/chip_group"
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/two_days_ago_chip"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:checkedChip="@id/today_chip"
-                    app:selectionRequired="true"
-                    app:singleSelection="true">
+                    android:text="@string/two_days_ago"
+                    app:shapeAppearance="@style/ChipsShapeAppearance" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/two_days_ago_chip"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/two_days_ago"
-                        app:shapeAppearance="@style/ChipsShapeAppearance" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/yesterday_chip"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/yesterday"
+                    app:shapeAppearance="@style/ChipsShapeAppearance" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/yesterday_chip"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/yesterday"
-                        app:shapeAppearance="@style/ChipsShapeAppearance" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/today_chip"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/today"
-                        app:shapeAppearance="@style/ChipsShapeAppearance" />
-                </com.google.android.material.chip.ChipGroup>
-            </LinearLayout>
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/today_chip"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/today"
+                    app:shapeAppearance="@style/ChipsShapeAppearance" />
+            </com.google.android.material.chip.ChipGroup>
 
             <ru.varasoft.pictureoftheday.view.EquilateralImageView
                 android:id="@+id/image_view"
@@ -76,12 +73,10 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/chips"
+                app:layout_constraintTop_toBottomOf="@id/chip_group"
                 app:srcCompat="@drawable/ic_no_photo_vector" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
     <include layout="@layout/bottom_sheet_layout" />
-
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

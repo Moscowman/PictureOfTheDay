@@ -19,9 +19,9 @@
         app:endIconDrawable="@drawable/ic_wikipedia"
         app:endIconMode="custom"
         app:helperText="@string/wiki_helper_text"
+        app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearance="@style/AppShapeAppearance">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -44,8 +44,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:labelVisibilityMode="labeled"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="parent"
         app:menu="@menu/menu_bottom_navigation_view" />
 </androidx.constraintlayout.motion.widget.MotionLayout>
