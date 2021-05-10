@@ -12,7 +12,7 @@ import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import coil.api.load
+import coil.load
 import kotlinx.android.synthetic.main.fragment_earth.*
 import kotlinx.android.synthetic.main.fragment_mars.*
 import ru.varasoft.pictureoftheday.R
