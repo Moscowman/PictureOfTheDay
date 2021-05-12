@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProviders
 import coil.load
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_mars.*
-import kotlinx.android.synthetic.main.fragment_pod.*
 import ru.varasoft.pictureoftheday.R
 import ru.varasoft.pictureoftheday.model.mars.MarsPhotoArrayServerResponseData
 import ru.varasoft.pictureoftheday.model.mars.MarsPhotoData
