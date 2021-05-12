@@ -3,16 +3,21 @@ package ru.varasoft.pictureoftheday.view
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.view.*
+import android.view.animation.AnticipateOvershootInterpolator
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import android.transition.ChangeBounds
+import android.transition.TransitionManager
 import coil.load
 import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
-import kotlinx.android.synthetic.main.fragment_pod.*
+import kotlinx.android.synthetic.main.fragment_pod_start.*
 import ru.varasoft.pictureoftheday.R
 import ru.varasoft.pictureoftheday.model.pod.PODServerResponseData
 import ru.varasoft.pictureoftheday.model.pod.PictureOfTheDayData
@@ -32,7 +37,22 @@ class PODFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_pod, container, false)
+        val inflater = inflater.inflate(R.layout.fragment_pod_start, container, false)
+        return inflater
+    }
+
+    private fun showComponents() {
+        Handler().postDelayed({
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(context, R.layout.fragment_pod_end)
+
+            val transition = ChangeBounds()
+            transition.interpolator = AnticipateOvershootInterpolator(1.0f)
+            transition.duration = 2000
+
+            TransitionManager.beginDelayedTransition(constraint_container, transition)
+            constraintSet.applyTo(constraint_container)
+        }, 1000)
     }
 
     private fun getDateRelativeToToday(offset: Int): String {
@@ -61,6 +81,8 @@ class PODFragment : Fragment() {
             }
         }
         setHasOptionsMenu(true)
+        showComponents()
+
     }
 
     private fun renderPuctureRelativeToToday(_offset: Int) {
@@ -118,8 +140,8 @@ class PODFragment : Fragment() {
 
 
                     showPicture(url, serverResponseData)
-                    bottom_sheet_description.text = serverResponseData.explanation
-                    bottom_sheet_description_header.text = serverResponseData.title
+                    //bottom_sheet_description.text = serverResponseData.explanation
+                    //bottom_sheet_description_header.text = serverResponseData.title
                 }
             }
             is PictureOfTheDayData.Loading -> {

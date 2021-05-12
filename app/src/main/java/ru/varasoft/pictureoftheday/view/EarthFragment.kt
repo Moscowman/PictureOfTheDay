@@ -1,4 +1,4 @@
-package geekbarains.material.ui.api
+package ru.varasoft.pictureoftheday.model.earth
 
 import android.Manifest
 import android.content.Context
