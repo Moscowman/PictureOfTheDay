@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/settings_top_margin"
+        android:fontFamily="@font/gentium_book_basic"
         android:text="@string/select_theme_text_view" />
 
     <com.google.android.material.chip.ChipGroup
