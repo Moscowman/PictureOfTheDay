@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.fragment_mars.*
 import ru.varasoft.pictureoftheday.R
 import ru.varasoft.pictureoftheday.model.mars.MarsPhotoArrayServerResponseData
 import ru.varasoft.pictureoftheday.model.mars.MarsPhotoData
-import ru.varasoft.pictureoftheday.viewmodel.MarsPhotoViewModel
+import ru.varasoft.pictureoftheday.presenter.MarsPhotoPresenter
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -23,8 +23,8 @@ class MarsFragment : Fragment() {
 
     private var offset: Int = 0
 
-    private val viewModel: MarsPhotoViewModel by lazy {
-        ViewModelProviders.of(this).get(MarsPhotoViewModel::class.java)
+    private val presenter: MarsPhotoPresenter by lazy {
+        ViewModelProviders.of(this).get(MarsPhotoPresenter::class.java)
     }
 
     override fun onCreateView(
@@ -36,7 +36,7 @@ class MarsFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.getData(getDateRelativeToToday(offset))
+        presenter.getData(getDateRelativeToToday(offset))
             .observe(viewLifecycleOwner, Observer<MarsPhotoData> {
                 renderData(it)
             })

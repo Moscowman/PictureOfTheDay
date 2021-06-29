@@ -18,19 +18,21 @@ import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_pod_start.*
+import moxy.MvpAppCompatFragment
+import moxy.ktx.moxyPresenter
 import ru.varasoft.pictureoftheday.R
 import ru.varasoft.pictureoftheday.model.pod.PODServerResponseData
 import ru.varasoft.pictureoftheday.model.pod.PictureOfTheDayData
-import ru.varasoft.pictureoftheday.viewmodel.PictureOfTheDayViewModel
+import ru.varasoft.pictureoftheday.presenter.PictureOfTheDayPresenter
 import java.text.SimpleDateFormat
 import java.util.*
 
-class PODFragment : Fragment() {
+class PODFragment : MvpAppCompatFragment(), PODView {
 
     private var offset: Int = 0
 
-    private val viewModel: PictureOfTheDayViewModel by lazy {
-        ViewModelProviders.of(this).get(PictureOfTheDayViewModel::class.java)
+    private val presenter: PictureOfTheDayPresenter by moxyPresenter {
+        PictureOfTheDayPresenter()
     }
 
     override fun onCreateView(
@@ -39,6 +41,10 @@ class PODFragment : Fragment() {
     ): View {
         val inflater = inflater.inflate(R.layout.fragment_pod_start, container, false)
         return inflater
+    }
+
+    override fun displayPicture(podData: PODServerResponseData) {
+        renderData(podData)
     }
 
     private fun showComponents() {
@@ -69,13 +75,13 @@ class PODFragment : Fragment() {
             chipGroup.findViewById<Chip>(position)?.let {
                 when (it.id) {
                     R.id.two_days_ago_chip -> {
-                        renderPuctureRelativeToToday(-2)
+                        presenter.renderPuctureRelativeToToday(-2)
                     }
                     R.id.yesterday_chip -> {
-                        renderPuctureRelativeToToday(-1)
+                        presenter.renderPuctureRelativeToToday(-1)
                     }
                     R.id.today_chip -> {
-                        renderPuctureRelativeToToday(0)
+                        presenter.renderPuctureRelativeToToday(0)
                     }
                 }
             }
@@ -83,20 +89,6 @@ class PODFragment : Fragment() {
         setHasOptionsMenu(true)
         showComponents()
 
-    }
-
-    private fun renderPuctureRelativeToToday(_offset: Int) {
-        offset = _offset
-        val date: String = getDateRelativeToToday(offset)
-        viewModel.getData(date).observe(
-            viewLifecycleOwner,
-            Observer<PictureOfTheDayData> { renderData(it) })
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel.getData(getDateRelativeToToday(offset))
-            .observe(viewLifecycleOwner, Observer<PictureOfTheDayData> { renderData(it) })
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -122,35 +114,23 @@ class PODFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun renderData(data: PictureOfTheDayData) {
-        when (data) {
-            is PictureOfTheDayData.Success -> {
-                val serverResponseData = data.serverResponseData
-                val url = if (serverResponseData.mediaType == "video")
-                    serverResponseData.thumbnailUrl
-                else serverResponseData.url
-                if (url.isNullOrEmpty()) {
-                    //Отобразите ошибку
-                    //showError("Сообщение, что ссылка пустая")
-                } else {
-                    //Отобразите фото
-                    //showSuccess()
-                    //Coil в работе: достаточно вызвать у нашего ImageView
-                    //нужную extension-функцию и передать ссылку и заглушки для placeholder
+    private fun renderData(serverResponseData: PODServerResponseData) {
+        val url = if (serverResponseData.mediaType == "video")
+            serverResponseData.thumbnailUrl
+        else serverResponseData.url
+        if (url.isNullOrEmpty()) {
+            //Отобразите ошибку
+            //showError("Сообщение, что ссылка пустая")
+        } else {
+            //Отобразите фото
+            //showSuccess()
+            //Coil в работе: достаточно вызвать у нашего ImageView
+            //нужную extension-функцию и передать ссылку и заглушки для placeholder
 
 
-                    showPicture(url, serverResponseData)
-                    //bottom_sheet_description.text = serverResponseData.explanation
-                    //bottom_sheet_description_header.text = serverResponseData.title
-                }
-            }
-            is PictureOfTheDayData.Loading -> {
-                //Отобразите загрузку
-                //showLoading()
-            }
-            is PictureOfTheDayData.Error -> {
-                toast(data.error.message)
-            }
+            showPicture(url, serverResponseData)
+            //bottom_sheet_description.text = serverResponseData.explanation
+            //bottom_sheet_description_header.text = serverResponseData.title
         }
     }
 
@@ -169,7 +149,7 @@ class PODFragment : Fragment() {
                     Intent.ACTION_VIEW,
                     Uri.parse(serverResponseData.url)
                 )
-                context!!.startActivity(webIntent)
+                requireContext().startActivity(webIntent)
             })
         } else {
             image_view.setOnClickListener(null)
