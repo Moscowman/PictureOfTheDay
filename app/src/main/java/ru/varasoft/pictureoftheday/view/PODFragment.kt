@@ -21,6 +21,7 @@ import kotlinx.android.synthetic.main.fragment_pod_start.*
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 import ru.varasoft.pictureoftheday.R
+import ru.varasoft.pictureoftheday.model.RetrofitImpl
 import ru.varasoft.pictureoftheday.model.pod.PODServerResponseData
 import ru.varasoft.pictureoftheday.model.pod.PictureOfTheDayData
 import ru.varasoft.pictureoftheday.presenter.PictureOfTheDayPresenter
@@ -28,11 +29,14 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class PODFragment : MvpAppCompatFragment(), PODView {
+    companion object {
+        fun newInstance() = PODFragment()
+    }
 
     private var offset: Int = 0
 
     private val presenter: PictureOfTheDayPresenter by moxyPresenter {
-        PictureOfTheDayPresenter()
+        PictureOfTheDayPresenter(RetrofitImpl())
     }
 
     override fun onCreateView(
@@ -161,12 +165,5 @@ class PODFragment : MvpAppCompatFragment(), PODView {
             setGravity(Gravity.BOTTOM, 0, 250)
             show()
         }
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance() =
-            PODFragment().apply {
-            }
     }
 }

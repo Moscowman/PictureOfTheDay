@@ -1,4 +1,4 @@
-package geekbarains.material.ui.api
+package ru.varasoft.pictureoftheday.view
 
 import android.os.Bundle
 import android.view.LayoutInflater

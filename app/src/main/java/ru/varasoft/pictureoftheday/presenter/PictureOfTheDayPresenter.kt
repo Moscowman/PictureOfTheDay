@@ -1,6 +1,5 @@
 package ru.varasoft.pictureoftheday.presenter
 
-import androidx.lifecycle.MutableLiveData
 import moxy.MvpPresenter
 import retrofit2.Call
 import retrofit2.Callback
@@ -14,11 +13,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class PictureOfTheDayPresenter(
-    private val liveDataForViewToObserve: MutableLiveData<PictureOfTheDayData> = MutableLiveData(),
     private val retrofitImpl: RetrofitImpl = RetrofitImpl()
 ) :
     MvpPresenter<PODView>() {
+
     override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
         displayPicture(getDateRelativeToToday(0))
     }
 

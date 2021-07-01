@@ -2,21 +2,21 @@ package ru.varasoft.pictureoftheday
 
 import android.content.Context
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import geekbarains.material.ui.api.MarsFragment
-import geekbarains.material.ui.api.WeatherFragment
+import moxy.MvpAppCompatActivity
+import moxy.ktx.moxyPresenter
 import ru.varasoft.pictureoftheday.databinding.ActivityMainBinding
 import ru.varasoft.pictureoftheday.model.earth.EarthFragment
-import ru.varasoft.pictureoftheday.view.PODFragment
-import ru.varasoft.pictureoftheday.view.SETTINGS_SHARED_PREFERENCE
-import ru.varasoft.pictureoftheday.view.SettingsFragment
-import ru.varasoft.pictureoftheday.view.THEME_RES_ID
+import ru.varasoft.pictureoftheday.view.*
+import ru.varasoft.popularlibs.MainPresenter
+import ru.varasoft.popularlibs.MainView
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : MvpAppCompatActivity(), MainView {
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding!!
+
+    private val presenter by moxyPresenter { MainPresenter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val resIdTheme = getSharedPreferences(SETTINGS_SHARED_PREFERENCE, Context.MODE_PRIVATE)
