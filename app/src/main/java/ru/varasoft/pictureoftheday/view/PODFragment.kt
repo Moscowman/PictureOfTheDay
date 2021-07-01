@@ -34,8 +34,6 @@ class PODFragment : MvpAppCompatFragment(), PODView {
         fun newInstance() = PODFragment()
     }
 
-    private var offset: Int = 0
-
     private val presenter: PictureOfTheDayPresenter by moxyPresenter {
         PictureOfTheDayPresenter(App.instance.router, RetrofitImpl())
     }
@@ -64,13 +62,6 @@ class PODFragment : MvpAppCompatFragment(), PODView {
             TransitionManager.beginDelayedTransition(constraint_container, transition)
             constraintSet.applyTo(constraint_container)
         }, 1000)
-    }
-
-    private fun getDateRelativeToToday(offset: Int): String {
-        val sdf = SimpleDateFormat("yyyy-MM-dd")
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DAY_OF_YEAR, offset);
-        return sdf.format(calendar.getTime())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -127,15 +118,7 @@ class PODFragment : MvpAppCompatFragment(), PODView {
             //Отобразите ошибку
             //showError("Сообщение, что ссылка пустая")
         } else {
-            //Отобразите фото
-            //showSuccess()
-            //Coil в работе: достаточно вызвать у нашего ImageView
-            //нужную extension-функцию и передать ссылку и заглушки для placeholder
-
-
             showPicture(url, serverResponseData)
-            //bottom_sheet_description.text = serverResponseData.explanation
-            //bottom_sheet_description_header.text = serverResponseData.title
         }
     }
 
@@ -158,13 +141,6 @@ class PODFragment : MvpAppCompatFragment(), PODView {
             })
         } else {
             image_view.setOnClickListener(null)
-        }
-    }
-
-    private fun Fragment.toast(string: String?) {
-        Toast.makeText(context, string, Toast.LENGTH_SHORT).apply {
-            setGravity(Gravity.BOTTOM, 0, 250)
-            show()
         }
     }
 }
