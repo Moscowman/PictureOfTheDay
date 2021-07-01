@@ -20,6 +20,7 @@ import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_pod_start.*
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
+import ru.varasoft.pictureoftheday.App
 import ru.varasoft.pictureoftheday.R
 import ru.varasoft.pictureoftheday.model.RetrofitImpl
 import ru.varasoft.pictureoftheday.model.pod.PODServerResponseData
@@ -36,7 +37,7 @@ class PODFragment : MvpAppCompatFragment(), PODView {
     private var offset: Int = 0
 
     private val presenter: PictureOfTheDayPresenter by moxyPresenter {
-        PictureOfTheDayPresenter(RetrofitImpl())
+        PictureOfTheDayPresenter(App.instance.router, RetrofitImpl())
     }
 
     override fun onCreateView(
@@ -54,7 +55,7 @@ class PODFragment : MvpAppCompatFragment(), PODView {
     private fun showComponents() {
         Handler().postDelayed({
             val constraintSet = ConstraintSet()
-            constraintSet.clone(context, R.layout.fragment_pod_end)
+            constraintSet.clone(requireContext(), R.layout.fragment_pod_end)
 
             val transition = ChangeBounds()
             transition.interpolator = AnticipateOvershootInterpolator(1.0f)

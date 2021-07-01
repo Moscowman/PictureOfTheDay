@@ -1,5 +1,6 @@
 package ru.varasoft.pictureoftheday.presenter
 
+import com.github.terrakok.cicerone.Router
 import moxy.MvpPresenter
 import retrofit2.Call
 import retrofit2.Callback
@@ -13,6 +14,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class PictureOfTheDayPresenter(
+    val router: Router,
     private val retrofitImpl: RetrofitImpl = RetrofitImpl()
 ) :
     MvpPresenter<PODView>() {
@@ -41,7 +43,7 @@ class PictureOfTheDayPresenter(
     }
 
     private fun sendServerRequest(date: String) {
-        val apiKey: String = BuildConfig.NASA_API_KEY
+        val apiKey: String = "DEMO_KEY"
         if (apiKey.isBlank()) {
             PictureOfTheDayData.Error(Throwable("You need API key"))
         } else {
