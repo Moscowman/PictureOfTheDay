@@ -1,5 +1,6 @@
 package ru.varasoft.pictureoftheday.view
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -14,7 +15,12 @@ import androidx.lifecycle.ViewModelProviders
 import android.transition.ChangeBounds
 import android.transition.TransitionManager
 import coil.load
+import com.github.terrakok.cicerone.Router
 import com.google.android.material.chip.Chip
+import dagger.android.AndroidInjection
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasAndroidInjector
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_pod_start.*
@@ -28,14 +34,25 @@ import ru.varasoft.pictureoftheday.model.pod.PictureOfTheDayData
 import ru.varasoft.pictureoftheday.presenter.PictureOfTheDayPresenter
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
-class PODFragment : MvpAppCompatFragment(), PODView {
+class PODFragment : MvpAppCompatFragment(), PODView, HasAndroidInjector {
     companion object {
         fun newInstance() = PODFragment()
     }
 
+    @Inject
+    lateinit var androidInjector: DispatchingAndroidInjector<Any>
+
+    @Inject
+    lateinit var router: Router
+
     private val presenter: PictureOfTheDayPresenter by moxyPresenter {
-        PictureOfTheDayPresenter(App.instance.router, RetrofitImpl())
+        PictureOfTheDayPresenter(router, RetrofitImpl())
+    }
+
+    override fun androidInjector(): AndroidInjector<Any> {
+        return androidInjector
     }
 
     override fun onCreateView(
@@ -44,6 +61,11 @@ class PODFragment : MvpAppCompatFragment(), PODView {
     ): View {
         val inflater = inflater.inflate(R.layout.fragment_pod_start, container, false)
         return inflater
+    }
+
+    override fun onAttach(context: Context) {
+        AndroidInjection.inject(this)
+        super.onAttach(context)
     }
 
     override fun displayPicture(podData: PODServerResponseData) {
