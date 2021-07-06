@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class PictureOfTheDayPresenter(
-    val router: Router,
+    private val router: Router,
     private val retrofitImpl: RetrofitImpl = RetrofitImpl()
 ) :
     MvpPresenter<PODView>() {

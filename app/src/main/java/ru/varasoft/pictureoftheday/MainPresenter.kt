@@ -5,7 +5,7 @@ import com.github.terrakok.cicerone.androidx.FragmentScreen
 import moxy.MvpPresenter
 import ru.varasoft.pictureoftheday.view.PODFragment
 
-class MainPresenter(val router: Router) : MvpPresenter<MainView>() {
+class MainPresenter(private val router: Router) : MvpPresenter<MainView>() {
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         router.replaceScreen(FragmentScreen{ PODFragment.newInstance()})
