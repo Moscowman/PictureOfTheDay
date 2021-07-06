@@ -18,19 +18,24 @@ import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_pod_start.*
+import moxy.MvpAppCompatFragment
+import moxy.ktx.moxyPresenter
+import ru.varasoft.pictureoftheday.App
 import ru.varasoft.pictureoftheday.R
+import ru.varasoft.pictureoftheday.model.RetrofitImpl
 import ru.varasoft.pictureoftheday.model.pod.PODServerResponseData
 import ru.varasoft.pictureoftheday.model.pod.PictureOfTheDayData
-import ru.varasoft.pictureoftheday.viewmodel.PictureOfTheDayViewModel
+import ru.varasoft.pictureoftheday.presenter.PictureOfTheDayPresenter
 import java.text.SimpleDateFormat
 import java.util.*
 
-class PODFragment : Fragment() {
+class PODFragment : MvpAppCompatFragment(), PODView {
+    companion object {
+        fun newInstance() = PODFragment()
+    }
 
-    private var offset: Int = 0
-
-    private val viewModel: PictureOfTheDayViewModel by lazy {
-        ViewModelProviders.of(this).get(PictureOfTheDayViewModel::class.java)
+    private val presenter: PictureOfTheDayPresenter by moxyPresenter {
+        PictureOfTheDayPresenter(App.instance.router, RetrofitImpl())
     }
 
     override fun onCreateView(
@@ -41,10 +46,14 @@ class PODFragment : Fragment() {
         return inflater
     }
 
+    override fun displayPicture(podData: PODServerResponseData) {
+        renderData(podData)
+    }
+
     private fun showComponents() {
         Handler().postDelayed({
             val constraintSet = ConstraintSet()
-            constraintSet.clone(context, R.layout.fragment_pod_end)
+            constraintSet.clone(requireContext(), R.layout.fragment_pod_end)
 
             val transition = ChangeBounds()
             transition.interpolator = AnticipateOvershootInterpolator(1.0f)
@@ -55,13 +64,6 @@ class PODFragment : Fragment() {
         }, 1000)
     }
 
-    private fun getDateRelativeToToday(offset: Int): String {
-        val sdf = SimpleDateFormat("yyyy-MM-dd")
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DAY_OF_YEAR, offset);
-        return sdf.format(calendar.getTime())
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -69,13 +71,13 @@ class PODFragment : Fragment() {
             chipGroup.findViewById<Chip>(position)?.let {
                 when (it.id) {
                     R.id.two_days_ago_chip -> {
-                        renderPuctureRelativeToToday(-2)
+                        presenter.renderPuctureRelativeToToday(-2)
                     }
                     R.id.yesterday_chip -> {
-                        renderPuctureRelativeToToday(-1)
+                        presenter.renderPuctureRelativeToToday(-1)
                     }
                     R.id.today_chip -> {
-                        renderPuctureRelativeToToday(0)
+                        presenter.renderPuctureRelativeToToday(0)
                     }
                 }
             }
@@ -83,20 +85,6 @@ class PODFragment : Fragment() {
         setHasOptionsMenu(true)
         showComponents()
 
-    }
-
-    private fun renderPuctureRelativeToToday(_offset: Int) {
-        offset = _offset
-        val date: String = getDateRelativeToToday(offset)
-        viewModel.getData(date).observe(
-            viewLifecycleOwner,
-            Observer<PictureOfTheDayData> { renderData(it) })
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel.getData(getDateRelativeToToday(offset))
-            .observe(viewLifecycleOwner, Observer<PictureOfTheDayData> { renderData(it) })
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -122,35 +110,15 @@ class PODFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun renderData(data: PictureOfTheDayData) {
-        when (data) {
-            is PictureOfTheDayData.Success -> {
-                val serverResponseData = data.serverResponseData
-                val url = if (serverResponseData.mediaType == "video")
-                    serverResponseData.thumbnailUrl
-                else serverResponseData.url
-                if (url.isNullOrEmpty()) {
-                    //Отобразите ошибку
-                    //showError("Сообщение, что ссылка пустая")
-                } else {
-                    //Отобразите фото
-                    //showSuccess()
-                    //Coil в работе: достаточно вызвать у нашего ImageView
-                    //нужную extension-функцию и передать ссылку и заглушки для placeholder
-
-
-                    showPicture(url, serverResponseData)
-                    //bottom_sheet_description.text = serverResponseData.explanation
-                    //bottom_sheet_description_header.text = serverResponseData.title
-                }
-            }
-            is PictureOfTheDayData.Loading -> {
-                //Отобразите загрузку
-                //showLoading()
-            }
-            is PictureOfTheDayData.Error -> {
-                toast(data.error.message)
-            }
+    private fun renderData(serverResponseData: PODServerResponseData) {
+        val url = if (serverResponseData.mediaType == "video")
+            serverResponseData.thumbnailUrl
+        else serverResponseData.url
+        if (url.isNullOrEmpty()) {
+            //Отобразите ошибку
+            //showError("Сообщение, что ссылка пустая")
+        } else {
+            showPicture(url, serverResponseData)
         }
     }
 
@@ -169,24 +137,10 @@ class PODFragment : Fragment() {
                     Intent.ACTION_VIEW,
                     Uri.parse(serverResponseData.url)
                 )
-                context!!.startActivity(webIntent)
+                requireContext().startActivity(webIntent)
             })
         } else {
             image_view.setOnClickListener(null)
         }
-    }
-
-    private fun Fragment.toast(string: String?) {
-        Toast.makeText(context, string, Toast.LENGTH_SHORT).apply {
-            setGravity(Gravity.BOTTOM, 0, 250)
-            show()
-        }
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance() =
-            PODFragment().apply {
-            }
     }
 }

@@ -1,4 +1,4 @@
-package ru.varasoft.pictureoftheday.viewmodel
+package ru.varasoft.pictureoftheday.presenter
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,7 +12,7 @@ import ru.varasoft.pictureoftheday.model.mars.MarsManifestServerResponseData
 import ru.varasoft.pictureoftheday.model.mars.MarsPhotoArrayServerResponseData
 import ru.varasoft.pictureoftheday.model.mars.MarsPhotoData
 
-class MarsPhotoViewModel(
+class MarsPhotoPresenter(
     private val liveDataForViewToObserve: MutableLiveData<MarsPhotoData> = MutableLiveData(),
     private val retrofitImpl: RetrofitImpl = RetrofitImpl(),
     var roversManifest: Response<MarsManifestServerResponseData>? = null
