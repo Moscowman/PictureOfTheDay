@@ -6,7 +6,9 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
 import dagger.android.AndroidInjector
+import javax.inject.Singleton
 
+@Singleton
 @Component(modules = [AndroidInjectionModule::class, MainModule::class, PODModule::class])
 interface PictureOfTheDayComponent : AndroidInjector<App> {
 
@@ -14,10 +16,10 @@ interface PictureOfTheDayComponent : AndroidInjector<App> {
     interface Builder {
 
         @BindsInstance
-        fun withContext(context: Context) : Builder
+        fun withContext(context: Context): Builder
 
         @BindsInstance
-        fun withRouter(router: Router) : Builder
+        fun withRouter(router: Router): Builder
 
         fun build(): PictureOfTheDayComponent
     }

@@ -7,6 +7,4 @@ import ru.varasoft.pictureoftheday.view.PODFragment
 
 @Module
 abstract class PODModule {
-    @ContributesAndroidInjector
-    abstract fun bindPODFragment(): Fragment
 }
