@@ -9,7 +9,7 @@ import dagger.android.AndroidInjector
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [AndroidInjectionModule::class, MainModule::class, PODModule::class])
+@Component(modules = [AndroidInjectionModule::class, UiModule::class])
 interface PictureOfTheDayComponent : AndroidInjector<App> {
 
     @Component.Builder

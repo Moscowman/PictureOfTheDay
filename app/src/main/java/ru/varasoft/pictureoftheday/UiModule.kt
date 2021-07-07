@@ -6,7 +6,7 @@ import dagger.android.ContributesAndroidInjector
 import ru.varasoft.pictureoftheday.view.PODFragment
 
 @Module
-abstract class MainModule {
+abstract class UiModule {
 
     @ContributesAndroidInjector
     abstract fun bindMainActivity(): MainActivity
