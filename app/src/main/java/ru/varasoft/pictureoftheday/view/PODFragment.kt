@@ -15,7 +15,6 @@ import com.github.terrakok.cicerone.Router
 import com.google.android.material.chip.Chip
 import dagger.android.*
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_pod_start.*
 import moxy.ktx.moxyPresenter
 import ru.varasoft.pictureoftheday.R
@@ -25,7 +24,7 @@ import ru.varasoft.pictureoftheday.presenter.PictureOfTheDayPresenter
 import java.util.*
 import javax.inject.Inject
 
-class PODFragment : AbsFragment(R.layout.fragment_pod_start), PODView {
+class PODFragment : AbsFragment(R.layout.fragment_pod_start), PODView, BackButtonListener {
     companion object {
         fun newInstance() = PODFragment()
     }
@@ -33,9 +32,14 @@ class PODFragment : AbsFragment(R.layout.fragment_pod_start), PODView {
     @Inject
     lateinit var router: Router
 
+    @Inject
+    lateinit var retrofitImpl: RetrofitImpl
+
     private val presenter: PictureOfTheDayPresenter by moxyPresenter {
-        PictureOfTheDayPresenter(router, RetrofitImpl())
+        PictureOfTheDayPresenter(router, retrofitImpl)
     }
+
+    override fun backPressed() = presenter.backPressed()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,7 +56,7 @@ class PODFragment : AbsFragment(R.layout.fragment_pod_start), PODView {
     private fun showComponents() {
         Handler().postDelayed({
             val constraintSet = ConstraintSet()
-            constraintSet.clone(requireContext(), R.layout.fragment_pod_end)
+            constraintSet.clone(requireContext(), R.layout.fragment_pod_end_constraint)
 
             val transition = ChangeBounds()
             transition.interpolator = AnticipateOvershootInterpolator(1.0f)
@@ -118,6 +122,8 @@ class PODFragment : AbsFragment(R.layout.fragment_pod_start), PODView {
             //showError("Сообщение, что ссылка пустая")
         } else {
             showPicture(url, serverResponseData)
+            pod_description.text = serverResponseData.explanation
+            pod_description_header.text = serverResponseData.title
         }
     }
 

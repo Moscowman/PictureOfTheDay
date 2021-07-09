@@ -7,39 +7,41 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import coil.load
-import kotlinx.android.synthetic.main.bottom_sheet_layout.*
+import com.github.terrakok.cicerone.Router
 import kotlinx.android.synthetic.main.fragment_mars.*
+import moxy.ktx.moxyPresenter
 import ru.varasoft.pictureoftheday.R
-import ru.varasoft.pictureoftheday.model.mars.MarsPhotoArrayServerResponseData
+import ru.varasoft.pictureoftheday.model.RetrofitImpl
 import ru.varasoft.pictureoftheday.model.mars.MarsPhotoData
 import ru.varasoft.pictureoftheday.presenter.MarsPhotoPresenter
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
-class MarsFragment : Fragment() {
+class MarsFragment : AbsFragment(R.layout.fragment_mars), MarsView, BackButtonListener {
 
-    private var offset: Int = 0
+    @Inject
+    lateinit var router: Router
 
-    private val presenter: MarsPhotoPresenter by lazy {
-        ViewModelProviders.of(this).get(MarsPhotoPresenter::class.java)
+    @Inject
+    lateinit var retrofitImpl: RetrofitImpl
+
+    override fun displayPicture(url: String) {
+        showPicture(url)
     }
+
+    private val presenter: MarsPhotoPresenter by moxyPresenter {
+        MarsPhotoPresenter(router, retrofitImpl)
+    }
+
+    override fun backPressed() = presenter.backPressed()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_mars, container, false)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        presenter.getData(getDateRelativeToToday(offset))
-            .observe(viewLifecycleOwner, Observer<MarsPhotoData> {
-                renderData(it)
-            })
     }
 
     private fun getDateRelativeToToday(offset: Int): String {
@@ -59,12 +61,12 @@ class MarsFragment : Fragment() {
                     //showError("Сообщение, что ссылка пустая")
                 } else {
                     //Отобразите фото
-                    //showSuccess()
+                    showPicture(url)
                     //Coil в работе: достаточно вызвать у нашего ImageView
                     //нужную extension-функцию и передать ссылку и заглушки для placeholder
 
 
-                    showPicture(url, serverResponseData)
+                    showPicture(url)
                 }
             }
             is MarsPhotoData.Loading -> {
@@ -87,7 +89,6 @@ class MarsFragment : Fragment() {
 
     private fun showPicture(
         url: String?,
-        serverResponseData: MarsPhotoArrayServerResponseData
     ) {
         mars_image_view.load(url) {
             lifecycle(this@MarsFragment)

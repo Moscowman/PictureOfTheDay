@@ -11,17 +11,36 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import coil.load
+import com.github.terrakok.cicerone.Router
 import kotlinx.android.synthetic.main.fragment_earth.*
 import kotlinx.android.synthetic.main.fragment_mars.*
+import moxy.ktx.moxyPresenter
 import ru.varasoft.pictureoftheday.R
+import ru.varasoft.pictureoftheday.model.RetrofitImpl
+import ru.varasoft.pictureoftheday.presenter.EarthPhotoPresenter
+import ru.varasoft.pictureoftheday.view.AbsFragment
+import ru.varasoft.pictureoftheday.view.BackButtonListener
+import ru.varasoft.pictureoftheday.view.EarthView
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
-class EarthFragment : Fragment() {
+class EarthFragment : AbsFragment(R.layout.fragment_earth), EarthView, BackButtonListener {
 
     var location: Location? = null
+
+    @Inject
+    lateinit var router: Router
+
+    @Inject
+    lateinit var retrofitImpl: RetrofitImpl
+
+    private val presenter: EarthPhotoPresenter by moxyPresenter {
+        EarthPhotoPresenter(retrofitImpl)
+    }
+
+    override fun backPressed() = presenter.backPressed()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,13 +51,13 @@ class EarthFragment : Fragment() {
 
     fun getCurrentLocation() {
         val locationManager: LocationManager =
-            context!!.getSystemService(Context.LOCATION_SERVICE) as LocationManager;
+            requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager;
 
         if (ActivityCompat.checkSelfPermission(
-                context!!,
+                requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                context!!,
+                requireContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
@@ -51,12 +70,12 @@ class EarthFragment : Fragment() {
     fun requestLocationPermission() {
         try {
             if (ContextCompat.checkSelfPermission(
-                    getActivity()!!,
+                    requireActivity(),
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
                 ActivityCompat.requestPermissions(
-                    getActivity()!!,
+                    requireActivity(),
                     arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                     101
                 )

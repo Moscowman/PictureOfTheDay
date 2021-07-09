@@ -1,8 +1,7 @@
 package ru.varasoft.pictureoftheday.presenter
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import com.github.terrakok.cicerone.Router
+import moxy.MvpPresenter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -10,20 +9,27 @@ import ru.varasoft.pictureoftheday.BuildConfig
 import ru.varasoft.pictureoftheday.model.RetrofitImpl
 import ru.varasoft.pictureoftheday.model.pod.PODServerResponseData
 import ru.varasoft.pictureoftheday.model.pod.PictureOfTheDayData
+import ru.varasoft.pictureoftheday.view.PODView
+import javax.inject.Inject
 
 class EarthPhotoPresenter(
-    private val liveDataForViewToObserve: MutableLiveData<PictureOfTheDayData> = MutableLiveData(),
-    private val retrofitImpl: RetrofitImpl = RetrofitImpl()
+    private val retrofitImpl: RetrofitImpl
 ) :
-    ViewModel() {
+    MvpPresenter<PODView>()  {
 
-    fun getData(date: String): LiveData<PictureOfTheDayData> {
+    @Inject
+    lateinit var router: Router
+
+    fun backPressed(): Boolean {
+        router.exit()
+        return true
+    }
+
+    fun displayPicture(date: String) {
         sendServerRequest(date)
-        return liveDataForViewToObserve
     }
 
     private fun sendServerRequest(date: String) {
-        liveDataForViewToObserve.value = PictureOfTheDayData.Loading(null)
         val apiKey: String = BuildConfig.NASA_API_KEY
         if (apiKey.isBlank()) {
             PictureOfTheDayData.Error(Throwable("You need API key"))
@@ -35,22 +41,16 @@ class EarthPhotoPresenter(
                     response: Response<PODServerResponseData>
                 ) {
                     if (response.isSuccessful && response.body() != null) {
-                        liveDataForViewToObserve.value =
-                            PictureOfTheDayData.Success(response.body()!!)
+                        viewState.displayPicture(response.body()!!)
                     } else {
                         val message = response.message()
                         if (message.isNullOrEmpty()) {
-                            liveDataForViewToObserve.value =
-                                PictureOfTheDayData.Error(Throwable("Unidentified error"))
                         } else {
-                            liveDataForViewToObserve.value =
-                                PictureOfTheDayData.Error(Throwable(message))
                         }
                     }
                 }
 
                 override fun onFailure(call: Call<PODServerResponseData>, t: Throwable) {
-                    liveDataForViewToObserve.value = PictureOfTheDayData.Error(t)
                 }
             })
         }

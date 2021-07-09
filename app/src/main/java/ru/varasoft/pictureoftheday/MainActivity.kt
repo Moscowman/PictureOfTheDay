@@ -12,6 +12,7 @@ import dagger.android.HasAndroidInjector
 import moxy.MvpAppCompatActivity
 import moxy.ktx.moxyPresenter
 import ru.varasoft.pictureoftheday.databinding.ActivityMainBinding
+import ru.varasoft.pictureoftheday.model.earth.EarthFragment
 import ru.varasoft.pictureoftheday.view.*
 import ru.varasoft.popularlibs.MainPresenter
 import ru.varasoft.popularlibs.MainView
@@ -54,6 +55,14 @@ class MainActivity : AbsActivity(R.layout.activity_main), MainView {
             when (item.itemId) {
                 R.id.bottom_view_telescope -> {
                     replaceFragment(PODFragment())
+                    true
+                }
+                R.id.bottom_view_earth -> {
+                    replaceFragment(EarthFragment())
+                    true
+                }
+                R.id.bottom_view_mars -> {
+                    replaceFragment(MarsFragment())
                     true
                 }
                 R.id.bottom_view_settings -> {

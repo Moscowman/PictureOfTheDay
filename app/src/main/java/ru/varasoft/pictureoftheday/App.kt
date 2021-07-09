@@ -10,6 +10,8 @@ class App : DaggerApplication() {
         lateinit var instance: App
     }
 
+    lateinit var appComponent: PictureOfTheDayComponent
+
     override fun applicationInjector(): AndroidInjector<App> =
         DaggerPictureOfTheDayComponent
             .builder()
@@ -27,5 +29,4 @@ class App : DaggerApplication() {
         super.onCreate()
         instance = this
     }
-
 }
