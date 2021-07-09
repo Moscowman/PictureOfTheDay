@@ -1,25 +1,22 @@
 package ru.varasoft.pictureoftheday.presenter
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.github.terrakok.cicerone.Router
 import moxy.MvpPresenter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import ru.varasoft.pictureoftheday.BuildConfig
-import ru.varasoft.pictureoftheday.model.*
+import ru.varasoft.pictureoftheday.model.EarthModel
+import ru.varasoft.pictureoftheday.model.RetrofitImpl
 import ru.varasoft.pictureoftheday.model.mars.MarsManifestServerResponseData
 import ru.varasoft.pictureoftheday.model.mars.MarsPhotoArrayServerResponseData
 import ru.varasoft.pictureoftheday.model.mars.MarsPhotoData
 import ru.varasoft.pictureoftheday.util.Util
 import ru.varasoft.pictureoftheday.view.MarsView
-import javax.inject.Inject
 
 class MarsPhotoPresenter(
     private val router: Router,
-    private val retrofitImpl: RetrofitImpl = RetrofitImpl(),
+    private val retrofitImpl: RetrofitImpl,
     var roversManifest: Response<MarsManifestServerResponseData>? = null
 ) :
     MvpPresenter<MarsView>() {

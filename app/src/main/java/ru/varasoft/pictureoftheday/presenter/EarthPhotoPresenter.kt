@@ -14,6 +14,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import ru.varasoft.pictureoftheday.BuildConfig
+import ru.varasoft.pictureoftheday.model.EarthModel
 import ru.varasoft.pictureoftheday.model.RetrofitImpl
 import ru.varasoft.pictureoftheday.model.pod.PODServerResponseData
 import ru.varasoft.pictureoftheday.model.pod.PictureOfTheDayData
@@ -25,7 +26,7 @@ import java.util.*
 import javax.inject.Inject
 
 class EarthPhotoPresenter(
-    private val retrofitImpl: RetrofitImpl,
+    private val model: EarthModel,
     private val context: Context
 ) :
     MvpPresenter<EarthView>() {
@@ -65,14 +66,10 @@ class EarthPhotoPresenter(
 
     fun displayPicture() {
         location?.let {
-            val lat = it.latitude
-            val lon = it.longitude
-            val sdf = SimpleDateFormat("yyyy-MM-dd")
-            val currentTime = Calendar.getInstance().time
-            val date = sdf.format(currentTime)
-            val url =
-                "https://api.nasa.gov/planetary/earth/imagery?lon=$lon&lat=$lat&dim=0.15&date=$date&api_key=DEMO_KEY"
-            viewState.displayPicture(url)
+            val url = model.getPictureUrlForLocation(it)
+            url?.let {
+                viewState.displayPicture(url)
+            }
         }
     }
 }

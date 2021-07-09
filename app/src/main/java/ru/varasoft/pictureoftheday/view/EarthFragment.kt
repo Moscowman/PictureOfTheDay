@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.fragment_earth.*
 import kotlinx.android.synthetic.main.fragment_mars.*
 import moxy.ktx.moxyPresenter
 import ru.varasoft.pictureoftheday.R
-import ru.varasoft.pictureoftheday.model.RetrofitImpl
+import ru.varasoft.pictureoftheday.model.EarthModel
 import ru.varasoft.pictureoftheday.presenter.EarthPhotoPresenter
 import ru.varasoft.pictureoftheday.view.AbsFragment
 import ru.varasoft.pictureoftheday.view.BackButtonListener
@@ -28,10 +28,10 @@ class EarthFragment : AbsFragment(R.layout.fragment_earth), EarthView, BackButto
     lateinit var router: Router
 
     @Inject
-    lateinit var retrofitImpl: RetrofitImpl
+    lateinit var earthModel: EarthModel
 
     private val presenter: EarthPhotoPresenter by moxyPresenter {
-        EarthPhotoPresenter(retrofitImpl, requireContext())
+        EarthPhotoPresenter(earthModel, requireContext())
     }
 
     override fun backPressed() = presenter.backPressed()
