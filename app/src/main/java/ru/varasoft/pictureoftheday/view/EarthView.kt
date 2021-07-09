@@ -9,5 +9,5 @@ import ru.varasoft.pictureoftheday.model.pod.PictureOfTheDayData
 
 @StateStrategyType(AddToEndSingleStrategy::class)
 interface EarthView : MvpView {
-    //fun displayPicture(podData: PODServerResponseData)
+    fun displayPicture(url: String)
 }

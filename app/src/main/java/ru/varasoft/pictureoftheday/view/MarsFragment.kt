@@ -28,7 +28,11 @@ class MarsFragment : AbsFragment(R.layout.fragment_mars), MarsView, BackButtonLi
     lateinit var retrofitImpl: RetrofitImpl
 
     override fun displayPicture(url: String) {
-        showPicture(url)
+        mars_image_view.load(url) {
+            lifecycle(this@MarsFragment)
+            error(R.drawable.ic_load_error_vector)
+            placeholder(R.drawable.ic_no_photo_vector)
+        }
     }
 
     private val presenter: MarsPhotoPresenter by moxyPresenter {
@@ -44,56 +48,10 @@ class MarsFragment : AbsFragment(R.layout.fragment_mars), MarsView, BackButtonLi
         return inflater.inflate(R.layout.fragment_mars, container, false)
     }
 
-    private fun getDateRelativeToToday(offset: Int): String {
-        val sdf = SimpleDateFormat("yyyy-MM-dd")
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DAY_OF_YEAR, offset);
-        return sdf.format(calendar.getTime())
-    }
-
-    private fun renderData(data: MarsPhotoData) {
-        when (data) {
-            is MarsPhotoData.Success -> {
-                val serverResponseData = data.serverResponseData
-                val url = serverResponseData.photos[0].imgSrc
-                if (url.isNullOrEmpty()) {
-                    //Отобразите ошибку
-                    //showError("Сообщение, что ссылка пустая")
-                } else {
-                    //Отобразите фото
-                    showPicture(url)
-                    //Coil в работе: достаточно вызвать у нашего ImageView
-                    //нужную extension-функцию и передать ссылку и заглушки для placeholder
-
-
-                    showPicture(url)
-                }
-            }
-            is MarsPhotoData.Loading -> {
-                //Отобразите загрузку
-                //showLoading()
-            }
-            is MarsPhotoData.Error -> {
-                toast(data.error.message)
-            }
-        }
-    }
-
     private fun Fragment.toast(string: String?) {
         Toast.makeText(context, string, Toast.LENGTH_SHORT).apply {
             setGravity(Gravity.BOTTOM, 0, 250)
             show()
-        }
-    }
-
-
-    private fun showPicture(
-        url: String?,
-    ) {
-        mars_image_view.load(url) {
-            lifecycle(this@MarsFragment)
-            error(R.drawable.ic_load_error_vector)
-            placeholder(R.drawable.ic_no_photo_vector)
         }
     }
 
