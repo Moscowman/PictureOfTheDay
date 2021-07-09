@@ -1,11 +1,17 @@
 package ru.varasoft.pictureoftheday.presenter
 
+import android.content.Context
 import com.github.terrakok.cicerone.Router
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
 import moxy.MvpPresenter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import ru.varasoft.pictureoftheday.AndroidNetworkStatus
+import ru.varasoft.pictureoftheday.INetworkStatus
 import ru.varasoft.pictureoftheday.model.RetrofitImpl
+import ru.varasoft.pictureoftheday.model.pod.IPODCache
 import ru.varasoft.pictureoftheday.model.pod.PODServerResponseData
 import ru.varasoft.pictureoftheday.model.pod.PictureOfTheDayData
 import ru.varasoft.pictureoftheday.util.Util
@@ -15,7 +21,9 @@ import java.util.*
 
 class PictureOfTheDayPresenter(
     private val router: Router,
-    private val retrofitImpl: RetrofitImpl
+    private val retrofitImpl: RetrofitImpl,
+    private val context: Context,
+    private val podCache: IPODCache
 ) :
     MvpPresenter<PODView>() {
 
@@ -36,25 +44,33 @@ class PictureOfTheDayPresenter(
     }
 
     private fun sendServerRequest(date: String) {
-        val apiKey: String = "DEMO_KEY"
+        val apiKey = "DEMO_KEY"
         if (apiKey.isBlank()) {
             PictureOfTheDayData.Error(Throwable("You need API key"))
         } else {
-            retrofitImpl.getPODRetrofitImpl().getPictureOfTheDay(apiKey, "true", date)
-                .enqueue(object :
-                    Callback<PODServerResponseData> {
-                    override fun onResponse(
-                        call: Call<PODServerResponseData>,
-                        response: Response<PODServerResponseData>
-                    ) {
-                        if (response.isSuccessful && response.body() != null) {
-                            viewState.displayPicture(response.body()!!)
+            val ans: INetworkStatus = AndroidNetworkStatus(context)
+            ans.isOnlineSingle()
+                .flatMap { isOnline ->
+                    if (isOnline) {
+                        val retrofit = retrofitImpl.getPODRetrofitImpl()
+                        retrofit.getPictureOfTheDay(apiKey, "true", date)
+                            .flatMap { pod ->
+                                Single.fromCallable {
+                                    podCache.insertPOD(pod, date)
+                                    pod
+                                }
+                            }
+                    } else {
+                        Single.fromCallable {
                         }
                     }
-
-                    override fun onFailure(call: Call<PODServerResponseData>, t: Throwable) {
-                    }
+                }
+                .subscribe({ pod ->
+                    viewState.displayPicture(pod as PODServerResponseData)
+                }, {
+                    println("Error: ${it.message}")
                 })
+
         }
     }
 

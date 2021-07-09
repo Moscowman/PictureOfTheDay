@@ -17,6 +17,7 @@ class App : DaggerApplication() {
             .builder()
             .withContext(applicationContext)
             .withRouter(cicerone.router)
+            .application(this)
             .build()
 
     //Временно до даггера положим это тут

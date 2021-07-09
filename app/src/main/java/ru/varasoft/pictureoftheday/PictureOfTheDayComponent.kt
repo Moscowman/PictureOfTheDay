@@ -1,5 +1,6 @@
 package ru.varasoft.pictureoftheday
 
+import android.app.Application
 import android.content.Context
 import com.github.terrakok.cicerone.Router
 import dagger.BindsInstance
@@ -22,6 +23,9 @@ interface PictureOfTheDayComponent : AndroidInjector<App> {
 
         @BindsInstance
         fun withRouter(router: Router): Builder
+
+        @BindsInstance
+        fun application(application: Application): Builder
 
         fun build(): PictureOfTheDayComponent
     }
