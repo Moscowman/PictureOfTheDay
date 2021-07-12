@@ -2,6 +2,7 @@ package ru.varasoft.pictureoftheday.presenter
 
 import android.content.Context
 import com.github.terrakok.cicerone.Router
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import moxy.MvpPresenter
@@ -11,19 +12,16 @@ import retrofit2.Response
 import ru.varasoft.pictureoftheday.AndroidNetworkStatus
 import ru.varasoft.pictureoftheday.INetworkStatus
 import ru.varasoft.pictureoftheday.model.RetrofitImpl
-import ru.varasoft.pictureoftheday.model.pod.IPODCache
-import ru.varasoft.pictureoftheday.model.pod.PODServerResponseData
-import ru.varasoft.pictureoftheday.model.pod.PictureOfTheDayData
+import ru.varasoft.pictureoftheday.model.pod.*
 import ru.varasoft.pictureoftheday.util.Util
 import ru.varasoft.pictureoftheday.view.PODView
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
 class PictureOfTheDayPresenter(
     private val router: Router,
-    private val retrofitImpl: RetrofitImpl,
-    private val context: Context,
-    private val podCache: IPODCache
+    private val nasaPODRepo: INasaPODRepo
 ) :
     MvpPresenter<PODView>() {
 
@@ -39,38 +37,18 @@ class PictureOfTheDayPresenter(
         displayPicture(Util.getDateRelativeToToday(offset))
     }
 
-    fun displayPicture(date: String) {
-        sendServerRequest(date)
-    }
-
-    private fun sendServerRequest(date: String) {
+    private fun displayPicture(date: String) {
         val apiKey = "DEMO_KEY"
         if (apiKey.isBlank()) {
             PictureOfTheDayData.Error(Throwable("You need API key"))
         } else {
-            val ans: INetworkStatus = AndroidNetworkStatus(context)
-            ans.isOnlineSingle()
-                .flatMap { isOnline ->
-                    if (isOnline) {
-                        val retrofit = retrofitImpl.getPODRetrofitImpl()
-                        retrofit.getPictureOfTheDay(apiKey, "true", date)
-                            .flatMap { pod ->
-                                Single.fromCallable {
-                                    podCache.insertPOD(pod, date)
-                                    pod
-                                }
-                            }
-                    } else {
-                        Single.fromCallable {
-                        }
-                    }
-                }
+            nasaPODRepo.getPicture(apiKey, date)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ pod ->
-                    viewState.displayPicture(pod as PODServerResponseData)
+                    viewState.displayPicture(pod)
                 }, {
                     println("Error: ${it.message}")
                 })
-
         }
     }
 

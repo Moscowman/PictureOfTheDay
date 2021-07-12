@@ -29,4 +29,6 @@ interface PictureOfTheDayComponent : AndroidInjector<App> {
 
         fun build(): PictureOfTheDayComponent
     }
+
+    fun inject(pictureOfTheDayPresenter: PictureOfTheDayPresenter)
 }

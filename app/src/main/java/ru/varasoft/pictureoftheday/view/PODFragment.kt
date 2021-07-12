@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.fragment_pod_start.*
 import moxy.ktx.moxyPresenter
 import ru.varasoft.pictureoftheday.R
 import ru.varasoft.pictureoftheday.model.RetrofitImpl
+import ru.varasoft.pictureoftheday.model.pod.INasaPODRepo
 import ru.varasoft.pictureoftheday.model.pod.IPODCache
 import ru.varasoft.pictureoftheday.model.pod.PODServerResponseData
 import ru.varasoft.pictureoftheday.model.pod.RoomPODCache
@@ -40,8 +41,11 @@ class PODFragment : AbsFragment(R.layout.fragment_pod_start), PODView, BackButto
     @Inject
     lateinit var roomPODCache: IPODCache
 
+    @Inject
+    lateinit var nasaPODRepo: INasaPODRepo
+
     private val presenter: PictureOfTheDayPresenter by moxyPresenter {
-        PictureOfTheDayPresenter(router, retrofitImpl, requireContext(), roomPODCache)
+        PictureOfTheDayPresenter(router, nasaPODRepo)
     }
 
     override fun backPressed() = presenter.backPressed()
