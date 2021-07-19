@@ -11,12 +11,12 @@ class NasaPODRepo(
     private val context: Context
 ) :
     INasaPODRepo {
-    override fun getPicture(apiKey: String, date: String) =
+    override fun getPicture(date: String) =
         AndroidNetworkStatus(context).isOnlineSingle()
             .flatMap { isOnline ->
                 if (isOnline) {
                     val retrofit = retrofitImpl.getPODRetrofitImpl()
-                    retrofit.getPictureOfTheDay(apiKey, "true", date)
+                    retrofit.getPictureOfTheDay("true", date)
                         .flatMap { pod ->
                             Single.fromCallable {
                                 podCache.insertPOD(pod, date)

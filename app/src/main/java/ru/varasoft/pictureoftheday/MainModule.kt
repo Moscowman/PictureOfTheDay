@@ -17,8 +17,8 @@ class MainModule {
 
     @Singleton
     @Provides
-    fun database(app: Application): Database = Room.databaseBuilder(
-        app, Database::class.java,
+    fun database(context: Context): Database = Room.databaseBuilder(
+        context, Database::class.java,
         Database.DB_NAME
     ).build()
 

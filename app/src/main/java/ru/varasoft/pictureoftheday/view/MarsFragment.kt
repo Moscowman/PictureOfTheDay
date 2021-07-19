@@ -22,9 +22,6 @@ import javax.inject.Inject
 class MarsFragment : AbsFragment(R.layout.fragment_mars), MarsView, BackButtonListener {
 
     @Inject
-    lateinit var router: Router
-
-    @Inject
     lateinit var retrofitImpl: RetrofitImpl
 
     override fun displayPicture(url: String) {

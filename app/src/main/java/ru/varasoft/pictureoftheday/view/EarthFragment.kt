@@ -25,9 +25,6 @@ import javax.inject.Inject
 class EarthFragment : AbsFragment(R.layout.fragment_earth), EarthView, BackButtonListener {
 
     @Inject
-    lateinit var router: Router
-
-    @Inject
     lateinit var earthModel: EarthModel
 
     private val presenter: EarthPhotoPresenter by moxyPresenter {

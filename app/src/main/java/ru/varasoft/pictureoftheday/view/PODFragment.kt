@@ -17,6 +17,7 @@ import dagger.android.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_pod_start.*
 import moxy.ktx.moxyPresenter
+import ru.gb.gb_popular_libs.data.network.NetworkStateRepository
 import ru.varasoft.pictureoftheday.R
 import ru.varasoft.pictureoftheday.model.RetrofitImpl
 import ru.varasoft.pictureoftheday.model.pod.INasaPODRepo
@@ -33,9 +34,6 @@ class PODFragment : AbsFragment(R.layout.fragment_pod_start), PODView, BackButto
     }
 
     @Inject
-    lateinit var router: Router
-
-    @Inject
     lateinit var retrofitImpl: RetrofitImpl
 
     @Inject
@@ -44,8 +42,11 @@ class PODFragment : AbsFragment(R.layout.fragment_pod_start), PODView, BackButto
     @Inject
     lateinit var nasaPODRepo: INasaPODRepo
 
+    @Inject
+    lateinit var networkStateRepository: NetworkStateRepository
+
     private val presenter: PictureOfTheDayPresenter by moxyPresenter {
-        PictureOfTheDayPresenter(router, nasaPODRepo)
+        PictureOfTheDayPresenter(networkStateRepository, router, nasaPODRepo)
     }
 
     override fun backPressed() = presenter.backPressed()

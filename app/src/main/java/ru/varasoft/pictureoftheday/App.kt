@@ -6,28 +6,15 @@ import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
 
 class App : DaggerApplication() {
-    companion object {
-        lateinit var instance: App
-    }
-
-    lateinit var appComponent: PictureOfTheDayComponent
-
     override fun applicationInjector(): AndroidInjector<App> =
         DaggerPictureOfTheDayComponent
             .builder()
             .withContext(applicationContext)
-            .withRouter(cicerone.router)
-            .application(this)
+            .apply {
+                val cicerone = Cicerone.create()
+
+                withRouter(cicerone.router)
+                withNavigatorHolder(cicerone.getNavigatorHolder())
+            }
             .build()
-
-    //Временно до даггера положим это тут
-    private val cicerone: Cicerone<Router> by lazy {
-        Cicerone.create()
-    }
-    val navigatorHolder get() = cicerone.getNavigatorHolder()
-
-    override fun onCreate() {
-        super.onCreate()
-        instance = this
-    }
 }

@@ -2,6 +2,7 @@ package ru.varasoft.pictureoftheday.view
 
 import android.content.Context
 import androidx.annotation.LayoutRes
+import com.github.terrakok.cicerone.Router
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
@@ -13,6 +14,9 @@ abstract class AbsFragment(@LayoutRes contentLayoutId: Int) : MvpAppCompatFragme
 
     @Inject
     lateinit var androidInjector: DispatchingAndroidInjector<Any>
+
+    @Inject
+    lateinit var router: Router
 
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)

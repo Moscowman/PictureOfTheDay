@@ -2,6 +2,7 @@ package ru.varasoft.pictureoftheday.view
 
 import android.os.Bundle
 import androidx.annotation.LayoutRes
+import com.github.terrakok.cicerone.Router
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -13,6 +14,9 @@ abstract class AbsActivity(@LayoutRes contentLayoutId: Int) : MvpAppCompatActivi
 
     @Inject
     lateinit var androidInjector: DispatchingAndroidInjector<Any>
+
+    @Inject
+    lateinit var router: Router
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)

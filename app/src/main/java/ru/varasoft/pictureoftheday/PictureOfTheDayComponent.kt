@@ -1,18 +1,17 @@
 package ru.varasoft.pictureoftheday
 
-import android.app.Application
 import android.content.Context
+import com.github.terrakok.cicerone.NavigatorHolder
 import com.github.terrakok.cicerone.Router
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
 import dagger.android.AndroidInjector
 import ru.varasoft.pictureoftheday.presenter.PictureOfTheDayPresenter
-import ru.varasoft.popularlibs.MainPresenter
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [AndroidInjectionModule::class, UiModule::class, MainModule::class])
+@Component(modules = [AndroidInjectionModule::class, UiModule::class, MainModule::class, NetworkStateModule::class])
 interface PictureOfTheDayComponent : AndroidInjector<App> {
 
     @Component.Builder
@@ -25,7 +24,7 @@ interface PictureOfTheDayComponent : AndroidInjector<App> {
         fun withRouter(router: Router): Builder
 
         @BindsInstance
-        fun application(application: Application): Builder
+        fun withNavigatorHolder(navigatorHolder: NavigatorHolder): Builder
 
         fun build(): PictureOfTheDayComponent
     }

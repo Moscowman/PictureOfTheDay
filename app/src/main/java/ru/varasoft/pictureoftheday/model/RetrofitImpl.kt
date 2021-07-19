@@ -20,7 +20,12 @@ class RetrofitImpl {
             .baseUrl(baseUrl)
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
-            .client(createOkHttpClient(PODInterceptor()))
+            .client(
+                OkHttpClient.Builder()
+                    .addInterceptor(PODInterceptor())
+                    .addInterceptor(NASAApiInterceptor)
+                    .build()
+            )
             .build()
         return podRetrofit.create(PictureOfTheDayAPI::class.java)
     }

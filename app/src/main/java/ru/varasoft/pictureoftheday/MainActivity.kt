@@ -3,6 +3,7 @@ package ru.varasoft.pictureoftheday
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.github.terrakok.cicerone.NavigatorHolder
 import com.github.terrakok.cicerone.Router
 import com.github.terrakok.cicerone.androidx.AppNavigator
 import dagger.android.AndroidInjection
@@ -26,7 +27,7 @@ class MainActivity : AbsActivity(R.layout.activity_main), MainView {
     val navigator = AppNavigator(this, R.id.container)
 
     @Inject
-    lateinit var router: Router
+    lateinit var navigatorHolder: NavigatorHolder
 
     private val presenter by moxyPresenter { MainPresenter(router) }
 
@@ -42,12 +43,12 @@ class MainActivity : AbsActivity(R.layout.activity_main), MainView {
 
     override fun onResumeFragments() {
         super.onResumeFragments()
-        App.instance.navigatorHolder.setNavigator(navigator)
+        navigatorHolder.setNavigator(navigator)
     }
 
     override fun onPause() {
         super.onPause()
-        App.instance.navigatorHolder.removeNavigator()
+        navigatorHolder.removeNavigator()
     }
 
     private fun setBottomNavigationView() {
