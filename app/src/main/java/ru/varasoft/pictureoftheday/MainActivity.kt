@@ -3,25 +3,33 @@ package ru.varasoft.pictureoftheday
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.github.terrakok.cicerone.NavigatorHolder
+import com.github.terrakok.cicerone.Router
 import com.github.terrakok.cicerone.androidx.AppNavigator
+import dagger.android.AndroidInjection
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasAndroidInjector
 import moxy.MvpAppCompatActivity
 import moxy.ktx.moxyPresenter
 import ru.varasoft.pictureoftheday.databinding.ActivityMainBinding
-import ru.varasoft.pictureoftheday.view.PODFragment
-import ru.varasoft.pictureoftheday.view.SETTINGS_SHARED_PREFERENCE
-import ru.varasoft.pictureoftheday.view.SettingsFragment
-import ru.varasoft.pictureoftheday.view.THEME_RES_ID
+import ru.varasoft.pictureoftheday.model.earth.EarthFragment
+import ru.varasoft.pictureoftheday.view.*
 import ru.varasoft.popularlibs.MainPresenter
 import ru.varasoft.popularlibs.MainView
+import javax.inject.Inject
 
 
-class MainActivity : MvpAppCompatActivity(), MainView {
+class MainActivity : AbsActivity(R.layout.activity_main), MainView {
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding!!
 
     val navigator = AppNavigator(this, R.id.container)
 
-    private val presenter by moxyPresenter { MainPresenter(App.instance.router) }
+    @Inject
+    lateinit var navigatorHolder: NavigatorHolder
+
+    private val presenter by moxyPresenter { MainPresenter(router) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val resIdTheme = getSharedPreferences(SETTINGS_SHARED_PREFERENCE, Context.MODE_PRIVATE)
@@ -35,12 +43,12 @@ class MainActivity : MvpAppCompatActivity(), MainView {
 
     override fun onResumeFragments() {
         super.onResumeFragments()
-        App.instance.navigatorHolder.setNavigator(navigator)
+        navigatorHolder.setNavigator(navigator)
     }
 
     override fun onPause() {
         super.onPause()
-        App.instance.navigatorHolder.removeNavigator()
+        navigatorHolder.removeNavigator()
     }
 
     private fun setBottomNavigationView() {
@@ -48,6 +56,14 @@ class MainActivity : MvpAppCompatActivity(), MainView {
             when (item.itemId) {
                 R.id.bottom_view_telescope -> {
                     replaceFragment(PODFragment())
+                    true
+                }
+                R.id.bottom_view_earth -> {
+                    replaceFragment(EarthFragment())
+                    true
+                }
+                R.id.bottom_view_mars -> {
+                    replaceFragment(MarsFragment())
                     true
                 }
                 R.id.bottom_view_settings -> {
@@ -64,4 +80,5 @@ class MainActivity : MvpAppCompatActivity(), MainView {
             .replace(R.id.container, fragment)
             .commitNowAllowingStateLoss()
     }
+
 }

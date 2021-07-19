@@ -16,11 +16,6 @@
         android:title="Mars" />
 
     <item
-        android:id="@+id/bottom_view_weather"
-        android:icon="@drawable/ic_system"
-        android:title="Weather" />
-
-    <item
         android:id="@+id/bottom_view_settings"
         android:icon="@drawable/ic_settings_menu"
         android:title="Settings" />

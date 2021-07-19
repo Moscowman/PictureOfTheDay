@@ -1,68 +1,71 @@
 package ru.varasoft.pictureoftheday.presenter
 
 import com.github.terrakok.cicerone.Router
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.kotlin.plusAssign
 import moxy.MvpPresenter
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import ru.varasoft.pictureoftheday.BuildConfig
-import ru.varasoft.pictureoftheday.model.RetrofitImpl
-import ru.varasoft.pictureoftheday.model.pod.PODServerResponseData
+import ru.gb.gb_popular_libs.data.network.NetworkStateRepository
+import ru.varasoft.pictureoftheday.RxBus
+import ru.varasoft.pictureoftheday.model.NASAApiInterceptor.apiKey
+import ru.varasoft.pictureoftheday.model.NetworkState
+import ru.varasoft.pictureoftheday.model.pod.INasaPODRepo
 import ru.varasoft.pictureoftheday.model.pod.PictureOfTheDayData
+import ru.varasoft.pictureoftheday.util.Util
 import ru.varasoft.pictureoftheday.view.PODView
-import java.text.SimpleDateFormat
-import java.util.*
 
 class PictureOfTheDayPresenter(
+    private val networkStateRepository: NetworkStateRepository,
     private val router: Router,
-    private val retrofitImpl: RetrofitImpl = RetrofitImpl()
+    private val nasaPODRepo: INasaPODRepo,
 ) :
     MvpPresenter<PODView>() {
 
+    private var disposables = CompositeDisposable()
+
     override fun onFirstViewAttach() {
+      disposables +=
+            networkStateRepository
+                .watchForNetworkState()
+                .filter { networkState -> networkState == NetworkState.CONNECTED }
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext { displayPicture(Util.getDateRelativeToToday(0)) }
+                .subscribeOn(io.reactivex.rxjava3.schedulers.Schedulers.newThread())
+                .subscribe()
+
         super.onFirstViewAttach()
-        displayPicture(getDateRelativeToToday(0))
+        displayPicture(Util.getDateRelativeToToday(0))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        disposables.dispose()
     }
 
     var offset: Int = 0
 
-    private fun getDateRelativeToToday(offset: Int): String {
-        val sdf = SimpleDateFormat("yyyy-MM-dd")
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DAY_OF_YEAR, offset);
-        return sdf.format(calendar.getTime())
-    }
-
     fun renderPuctureRelativeToToday(_offset: Int) {
         offset = _offset
-        displayPicture(getDateRelativeToToday(offset))
+        displayPicture(Util.getDateRelativeToToday(offset))
     }
 
-    fun displayPicture(date: String) {
-        sendServerRequest(date)
-    }
-
-    private fun sendServerRequest(date: String) {
-        val apiKey: String = "DEMO_KEY"
+    private fun displayPicture(date: String) {
         if (apiKey.isBlank()) {
             PictureOfTheDayData.Error(Throwable("You need API key"))
         } else {
-            retrofitImpl.getPODRetrofitImpl().getPictureOfTheDay(apiKey, "true", date)
-                .enqueue(object :
-                    Callback<PODServerResponseData> {
-                    override fun onResponse(
-                        call: Call<PODServerResponseData>,
-                        response: Response<PODServerResponseData>
-                    ) {
-                        if (response.isSuccessful && response.body() != null) {
-                            viewState.displayPicture(response.body()!!)
-                        }
-                    }
-
-                    override fun onFailure(call: Call<PODServerResponseData>, t: Throwable) {
-                        //liveDataForViewToObserve.value = PictureOfTheDayData.Error(t)
-                    }
+            nasaPODRepo.getPicture(date)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ pod ->
+                    viewState.displayPicture(pod)
+                }, {
+                    println("Error: ${it.message}")
                 })
         }
+    }
+
+    fun backPressed(): Boolean {
+        router.exit()
+        return true
     }
 }

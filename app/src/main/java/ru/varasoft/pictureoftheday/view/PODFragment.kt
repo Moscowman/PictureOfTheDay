@@ -4,39 +4,52 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.transition.ChangeBounds
+import android.transition.TransitionManager
 import android.view.*
 import android.view.animation.AnticipateOvershootInterpolator
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import android.transition.ChangeBounds
-import android.transition.TransitionManager
 import coil.load
+import com.github.terrakok.cicerone.Router
 import com.google.android.material.chip.Chip
+import dagger.android.*
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_pod_start.*
-import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
-import ru.varasoft.pictureoftheday.App
+import ru.gb.gb_popular_libs.data.network.NetworkStateRepository
 import ru.varasoft.pictureoftheday.R
 import ru.varasoft.pictureoftheday.model.RetrofitImpl
+import ru.varasoft.pictureoftheday.model.pod.INasaPODRepo
+import ru.varasoft.pictureoftheday.model.pod.IPODCache
 import ru.varasoft.pictureoftheday.model.pod.PODServerResponseData
-import ru.varasoft.pictureoftheday.model.pod.PictureOfTheDayData
+import ru.varasoft.pictureoftheday.model.pod.RoomPODCache
 import ru.varasoft.pictureoftheday.presenter.PictureOfTheDayPresenter
-import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
-class PODFragment : MvpAppCompatFragment(), PODView {
+class PODFragment : AbsFragment(R.layout.fragment_pod_start), PODView, BackButtonListener {
     companion object {
         fun newInstance() = PODFragment()
     }
 
+    @Inject
+    lateinit var retrofitImpl: RetrofitImpl
+
+    @Inject
+    lateinit var roomPODCache: IPODCache
+
+    @Inject
+    lateinit var nasaPODRepo: INasaPODRepo
+
+    @Inject
+    lateinit var networkStateRepository: NetworkStateRepository
+
     private val presenter: PictureOfTheDayPresenter by moxyPresenter {
-        PictureOfTheDayPresenter(App.instance.router, RetrofitImpl())
+        PictureOfTheDayPresenter(networkStateRepository, router, nasaPODRepo)
     }
+
+    override fun backPressed() = presenter.backPressed()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,7 +66,7 @@ class PODFragment : MvpAppCompatFragment(), PODView {
     private fun showComponents() {
         Handler().postDelayed({
             val constraintSet = ConstraintSet()
-            constraintSet.clone(requireContext(), R.layout.fragment_pod_end)
+            constraintSet.clone(requireContext(), R.layout.fragment_pod_end_constraint)
 
             val transition = ChangeBounds()
             transition.interpolator = AnticipateOvershootInterpolator(1.0f)
@@ -119,6 +132,8 @@ class PODFragment : MvpAppCompatFragment(), PODView {
             //showError("Сообщение, что ссылка пустая")
         } else {
             showPicture(url, serverResponseData)
+            pod_description.text = serverResponseData.explanation
+            pod_description_header.text = serverResponseData.title
         }
     }
 

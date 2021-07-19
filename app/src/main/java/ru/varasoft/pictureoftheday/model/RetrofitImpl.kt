@@ -5,6 +5,7 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.varasoft.pictureoftheday.model.mars.MarsManifestAPI
 import ru.varasoft.pictureoftheday.model.mars.MarsPhotoAPI
@@ -17,8 +18,14 @@ class RetrofitImpl {
     fun getPODRetrofitImpl(): PictureOfTheDayAPI {
         val podRetrofit = Retrofit.Builder()
             .baseUrl(baseUrl)
+            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
-            .client(createOkHttpClient(PODInterceptor()))
+            .client(
+                OkHttpClient.Builder()
+                    .addInterceptor(PODInterceptor())
+                    .addInterceptor(NASAApiInterceptor)
+                    .build()
+            )
             .build()
         return podRetrofit.create(PictureOfTheDayAPI::class.java)
     }

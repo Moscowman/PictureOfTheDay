@@ -7,25 +7,36 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import coil.load
-import kotlinx.android.synthetic.main.bottom_sheet_layout.*
+import com.github.terrakok.cicerone.Router
 import kotlinx.android.synthetic.main.fragment_mars.*
+import moxy.ktx.moxyPresenter
 import ru.varasoft.pictureoftheday.R
-import ru.varasoft.pictureoftheday.model.mars.MarsPhotoArrayServerResponseData
+import ru.varasoft.pictureoftheday.model.RetrofitImpl
 import ru.varasoft.pictureoftheday.model.mars.MarsPhotoData
 import ru.varasoft.pictureoftheday.presenter.MarsPhotoPresenter
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
-class MarsFragment : Fragment() {
+class MarsFragment : AbsFragment(R.layout.fragment_mars), MarsView, BackButtonListener {
 
-    private var offset: Int = 0
+    @Inject
+    lateinit var retrofitImpl: RetrofitImpl
 
-    private val presenter: MarsPhotoPresenter by lazy {
-        ViewModelProviders.of(this).get(MarsPhotoPresenter::class.java)
+    override fun displayPicture(url: String) {
+        mars_image_view.load(url) {
+            lifecycle(this@MarsFragment)
+            error(R.drawable.ic_load_error_vector)
+            placeholder(R.drawable.ic_no_photo_vector)
+        }
     }
+
+    private val presenter: MarsPhotoPresenter by moxyPresenter {
+        MarsPhotoPresenter(router, retrofitImpl)
+    }
+
+    override fun backPressed() = presenter.backPressed()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,65 +45,10 @@ class MarsFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_mars, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        presenter.getData(getDateRelativeToToday(offset))
-            .observe(viewLifecycleOwner, Observer<MarsPhotoData> {
-                renderData(it)
-            })
-    }
-
-    private fun getDateRelativeToToday(offset: Int): String {
-        val sdf = SimpleDateFormat("yyyy-MM-dd")
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DAY_OF_YEAR, offset);
-        return sdf.format(calendar.getTime())
-    }
-
-    private fun renderData(data: MarsPhotoData) {
-        when (data) {
-            is MarsPhotoData.Success -> {
-                val serverResponseData = data.serverResponseData
-                val url = serverResponseData.photos[0].imgSrc
-                if (url.isNullOrEmpty()) {
-                    //Отобразите ошибку
-                    //showError("Сообщение, что ссылка пустая")
-                } else {
-                    //Отобразите фото
-                    //showSuccess()
-                    //Coil в работе: достаточно вызвать у нашего ImageView
-                    //нужную extension-функцию и передать ссылку и заглушки для placeholder
-
-
-                    showPicture(url, serverResponseData)
-                }
-            }
-            is MarsPhotoData.Loading -> {
-                //Отобразите загрузку
-                //showLoading()
-            }
-            is MarsPhotoData.Error -> {
-                toast(data.error.message)
-            }
-        }
-    }
-
     private fun Fragment.toast(string: String?) {
         Toast.makeText(context, string, Toast.LENGTH_SHORT).apply {
             setGravity(Gravity.BOTTOM, 0, 250)
             show()
-        }
-    }
-
-
-    private fun showPicture(
-        url: String?,
-        serverResponseData: MarsPhotoArrayServerResponseData
-    ) {
-        mars_image_view.load(url) {
-            lifecycle(this@MarsFragment)
-            error(R.drawable.ic_load_error_vector)
-            placeholder(R.drawable.ic_no_photo_vector)
         }
     }
 

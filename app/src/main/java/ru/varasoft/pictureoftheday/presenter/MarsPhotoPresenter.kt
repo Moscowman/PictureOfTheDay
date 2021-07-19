@@ -1,27 +1,33 @@
 package ru.varasoft.pictureoftheday.presenter
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import com.github.terrakok.cicerone.Router
+import moxy.MvpPresenter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import ru.varasoft.pictureoftheday.BuildConfig
-import ru.varasoft.pictureoftheday.model.*
+import ru.varasoft.pictureoftheday.model.EarthModel
+import ru.varasoft.pictureoftheday.model.RetrofitImpl
 import ru.varasoft.pictureoftheday.model.mars.MarsManifestServerResponseData
 import ru.varasoft.pictureoftheday.model.mars.MarsPhotoArrayServerResponseData
 import ru.varasoft.pictureoftheday.model.mars.MarsPhotoData
+import ru.varasoft.pictureoftheday.util.Util
+import ru.varasoft.pictureoftheday.view.MarsView
 
 class MarsPhotoPresenter(
-    private val liveDataForViewToObserve: MutableLiveData<MarsPhotoData> = MutableLiveData(),
-    private val retrofitImpl: RetrofitImpl = RetrofitImpl(),
+    private val router: Router,
+    private val retrofitImpl: RetrofitImpl,
     var roversManifest: Response<MarsManifestServerResponseData>? = null
 ) :
-    ViewModel() {
+    MvpPresenter<MarsView>() {
 
-    fun getData(date: String): LiveData<MarsPhotoData> {
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        getData(Util.getDateRelativeToToday(0))
+    }
+
+    fun getData(date: String) {
         getMarsManifest("perseverance", date)
-        return liveDataForViewToObserve
     }
 
     private fun getMarsManifest(roverName: String, date: String) {
@@ -47,11 +53,7 @@ class MarsPhotoPresenter(
                         } else {
                             val message = response.message()
                             if (message.isNullOrEmpty()) {
-                                liveDataForViewToObserve.value =
-                                    MarsPhotoData.Error(Throwable("Unidentified error"))
                             } else {
-                                liveDataForViewToObserve.value =
-                                    MarsPhotoData.Error(Throwable(message))
                             }
                         }
                     }
@@ -60,14 +62,12 @@ class MarsPhotoPresenter(
                         call: Call<MarsManifestServerResponseData>,
                         t: Throwable
                     ) {
-                        liveDataForViewToObserve.value = MarsPhotoData.Error(t)
                     }
                 })
         }
     }
 
     private fun sendServerRequest(roverName: String, date: String) {
-        liveDataForViewToObserve.value = MarsPhotoData.Loading(null)
         val apiKey: String = BuildConfig.NASA_API_KEY
         if (apiKey.isBlank()) {
             MarsPhotoData.Error(Throwable("You need API key"))
@@ -80,16 +80,11 @@ class MarsPhotoPresenter(
                         response: Response<MarsPhotoArrayServerResponseData>
                     ) {
                         if (response.isSuccessful && response.body() != null) {
-                            liveDataForViewToObserve.value =
-                                MarsPhotoData.Success(response.body()!!)
+                            viewState.displayPicture(response.body()!!.photos[0].imgSrc)
                         } else {
                             val message = response.message()
                             if (message.isNullOrEmpty()) {
-                                liveDataForViewToObserve.value =
-                                    MarsPhotoData.Error(Throwable("Unidentified error"))
                             } else {
-                                liveDataForViewToObserve.value =
-                                    MarsPhotoData.Error(Throwable(message))
                             }
                         }
                     }
@@ -98,9 +93,13 @@ class MarsPhotoPresenter(
                         call: Call<MarsPhotoArrayServerResponseData>,
                         t: Throwable
                     ) {
-                        liveDataForViewToObserve.value = MarsPhotoData.Error(t)
                     }
                 })
         }
+    }
+
+    fun backPressed(): Boolean {
+        router.exit()
+        return true
     }
 }

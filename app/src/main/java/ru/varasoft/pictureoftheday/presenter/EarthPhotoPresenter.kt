@@ -1,58 +1,75 @@
 package ru.varasoft.pictureoftheday.presenter
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationManager
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
+import com.github.terrakok.cicerone.Router
+import moxy.MvpPresenter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import ru.varasoft.pictureoftheday.BuildConfig
+import ru.varasoft.pictureoftheday.model.EarthModel
 import ru.varasoft.pictureoftheday.model.RetrofitImpl
 import ru.varasoft.pictureoftheday.model.pod.PODServerResponseData
 import ru.varasoft.pictureoftheday.model.pod.PictureOfTheDayData
+import ru.varasoft.pictureoftheday.util.Util
+import ru.varasoft.pictureoftheday.view.EarthView
+import ru.varasoft.pictureoftheday.view.PODView
+import java.text.SimpleDateFormat
+import java.util.*
+import javax.inject.Inject
 
 class EarthPhotoPresenter(
-    private val liveDataForViewToObserve: MutableLiveData<PictureOfTheDayData> = MutableLiveData(),
-    private val retrofitImpl: RetrofitImpl = RetrofitImpl()
+    private val model: EarthModel,
+    private val context: Context
 ) :
-    ViewModel() {
+    MvpPresenter<EarthView>() {
 
-    fun getData(date: String): LiveData<PictureOfTheDayData> {
-        sendServerRequest(date)
-        return liveDataForViewToObserve
+    @Inject
+    lateinit var router: Router
+
+    var location: Location? = null
+
+    fun backPressed(): Boolean {
+        router.exit()
+        return true
     }
 
-    private fun sendServerRequest(date: String) {
-        liveDataForViewToObserve.value = PictureOfTheDayData.Loading(null)
-        val apiKey: String = BuildConfig.NASA_API_KEY
-        if (apiKey.isBlank()) {
-            PictureOfTheDayData.Error(Throwable("You need API key"))
-        } else {
-            retrofitImpl.getPODRetrofitImpl().getPictureOfTheDay(apiKey, "true", date).enqueue(object :
-                Callback<PODServerResponseData> {
-                override fun onResponse(
-                    call: Call<PODServerResponseData>,
-                    response: Response<PODServerResponseData>
-                ) {
-                    if (response.isSuccessful && response.body() != null) {
-                        liveDataForViewToObserve.value =
-                            PictureOfTheDayData.Success(response.body()!!)
-                    } else {
-                        val message = response.message()
-                        if (message.isNullOrEmpty()) {
-                            liveDataForViewToObserve.value =
-                                PictureOfTheDayData.Error(Throwable("Unidentified error"))
-                        } else {
-                            liveDataForViewToObserve.value =
-                                PictureOfTheDayData.Error(Throwable(message))
-                        }
-                    }
-                }
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        getCurrentLocation()
+        displayPicture()
+    }
 
-                override fun onFailure(call: Call<PODServerResponseData>, t: Throwable) {
-                    liveDataForViewToObserve.value = PictureOfTheDayData.Error(t)
-                }
-            })
+    fun getCurrentLocation() {
+        val locationManager: LocationManager =
+            context.getSystemService(Context.LOCATION_SERVICE) as LocationManager;
+
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+    }
+
+    fun displayPicture() {
+        location?.let {
+            val url = model.getPictureUrlForLocation(it)
+            url?.let {
+                viewState.displayPicture(url)
+            }
         }
     }
 }

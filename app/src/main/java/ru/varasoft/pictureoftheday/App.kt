@@ -1,23 +1,20 @@
 package ru.varasoft.pictureoftheday
 
-import android.app.Application
 import com.github.terrakok.cicerone.Cicerone
 import com.github.terrakok.cicerone.Router
+import dagger.android.AndroidInjector
+import dagger.android.DaggerApplication
 
-class App : Application() {
-    companion object {
-        lateinit var instance: App
-    }
+class App : DaggerApplication() {
+    override fun applicationInjector(): AndroidInjector<App> =
+        DaggerPictureOfTheDayComponent
+            .builder()
+            .withContext(applicationContext)
+            .apply {
+                val cicerone = Cicerone.create()
 
-    //Временно до даггера положим это тут
-    private val cicerone: Cicerone<Router> by lazy {
-        Cicerone.create()
-    }
-    val navigatorHolder get() = cicerone.getNavigatorHolder()
-    val router get() = cicerone.router
-
-    override fun onCreate() {
-        super.onCreate()
-        instance = this
-    }
+                withRouter(cicerone.router)
+                withNavigatorHolder(cicerone.getNavigatorHolder())
+            }
+            .build()
 }
